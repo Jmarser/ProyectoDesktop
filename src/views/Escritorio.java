@@ -16,9 +16,7 @@ import utils.Constantes;
 import views.dialogos.Acerca;
 import views.internalFrame.Ciclos;
 import views.internalFrame.Empresas;
-import views.internalFrame.NuevoAlumno;
-import views.internalFrame.NuevoProfesor;
-import views.internalFrame.NuevoTutor;
+
 
 /**
  *
@@ -39,22 +37,6 @@ public class Escritorio extends javax.swing.JFrame {
         this.setExtendedState(MAXIMIZED_BOTH);//a pantalla completa
         this.setLocationRelativeTo(null);//centrado en la pantalla
 
-        /*Vamos a tomar la decoración del sistema donde se instale la aplicación*/
-        /*
-        this.setDefaultLookAndFeelDecorated(true);
-        JDialog.setDefaultLookAndFeelDecorated(true);
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Escritorio.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            Logger.getLogger(Escritorio.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(Escritorio.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(Escritorio.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        */
         addIcono();
 
     }
@@ -78,15 +60,12 @@ public class Escritorio extends javax.swing.JFrame {
         jdp_escritorio = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jm_profesores = new javax.swing.JMenu();
-        jmi_nuevo_profesor = new javax.swing.JMenuItem();
         jmi_gestionar_profesor = new javax.swing.JMenuItem();
         jmi_ciclos = new javax.swing.JMenuItem();
         jm_alumnos = new javax.swing.JMenu();
-        jmi_nuevo_alumno = new javax.swing.JMenuItem();
         jmi_gestionar_alumno = new javax.swing.JMenuItem();
         jm_empresas = new javax.swing.JMenu();
         jmi_empresas = new javax.swing.JMenuItem();
-        jmi_nuevo_tutor = new javax.swing.JMenuItem();
         jmi_gestionar_tutor = new javax.swing.JMenuItem();
         jm_ayuda = new javax.swing.JMenu();
         jmi_acerca = new javax.swing.JMenuItem();
@@ -106,14 +85,6 @@ public class Escritorio extends javax.swing.JFrame {
 
         jm_profesores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/teacher.png"))); // NOI18N
         jm_profesores.setText("PROFESORES");
-
-        jmi_nuevo_profesor.setText("Nuevo profesor");
-        jmi_nuevo_profesor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmi_nuevo_profesorActionPerformed(evt);
-            }
-        });
-        jm_profesores.add(jmi_nuevo_profesor);
 
         jmi_gestionar_profesor.setText("Gestionar Profesor");
         jmi_gestionar_profesor.addActionListener(new java.awt.event.ActionListener() {
@@ -136,14 +107,6 @@ public class Escritorio extends javax.swing.JFrame {
         jm_alumnos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/student.png"))); // NOI18N
         jm_alumnos.setText("ALUMNOS");
 
-        jmi_nuevo_alumno.setText("Nuevo Alumno");
-        jmi_nuevo_alumno.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmi_nuevo_alumnoActionPerformed(evt);
-            }
-        });
-        jm_alumnos.add(jmi_nuevo_alumno);
-
         jmi_gestionar_alumno.setText("Gestionar Alumno");
         jm_alumnos.add(jmi_gestionar_alumno);
 
@@ -159,14 +122,6 @@ public class Escritorio extends javax.swing.JFrame {
             }
         });
         jm_empresas.add(jmi_empresas);
-
-        jmi_nuevo_tutor.setText("Nuevo Tutor");
-        jmi_nuevo_tutor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmi_nuevo_tutorActionPerformed(evt);
-            }
-        });
-        jm_empresas.add(jmi_nuevo_tutor);
 
         jmi_gestionar_tutor.setText("Gestionar Tutor");
         jm_empresas.add(jmi_gestionar_tutor);
@@ -228,50 +183,6 @@ public class Escritorio extends javax.swing.JFrame {
             ciclos.show();
         }
     }//GEN-LAST:event_jmi_ciclosActionPerformed
-
-    private void jmi_nuevo_profesorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_nuevo_profesorActionPerformed
-        // Tomamos el valor de la variable estatica del jinternalframe
-        String x = NuevoProfesor.x;
-        
-        /*Comprobamos el valor de la variable, si es nula creamos una instancia
-        de lo contrario no hacemos nada*/
-        if (x == null){
-            NuevoProfesor profesor = new NuevoProfesor();
-            this.jdp_escritorio.add(profesor);//agregamos al escritorio
-            this.jdp_escritorio.moveToFront(profesor);
-            profesor.show();//lo mostramos
-        }
-        
-    }//GEN-LAST:event_jmi_nuevo_profesorActionPerformed
-
-    private void jmi_nuevo_alumnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_nuevo_alumnoActionPerformed
-        // Tomamos el valor de la variable estatica del jinternalframe
-        String x = NuevoAlumno.x;
-        
-        /*Comprobamos el valor de la variable, si es nula creamos una instancia
-        de lo contrario no hacemos nada*/
-        if (x == null){
-            NuevoAlumno alumno = new NuevoAlumno();
-            this.jdp_escritorio.add(alumno);//agregamos al escritorio
-            this.jdp_escritorio.moveToFront(alumno);
-            alumno.show();//lo mostramos
-        }
-        
-    }//GEN-LAST:event_jmi_nuevo_alumnoActionPerformed
-
-    private void jmi_nuevo_tutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_nuevo_tutorActionPerformed
-        // Tomamos el valor de la variable estatica del jinternalframe
-        String x = NuevoTutor.x;
-        
-        /*Comprobamos el valor de la variable, si es nula creamos una instancia
-        de lo contrario no hacemos nada*/
-        if (x == null){
-            NuevoTutor tutor = new NuevoTutor();
-            this.jdp_escritorio.add(tutor);//agregamos al escritorio
-            this.jdp_escritorio.moveToFront(tutor);
-            tutor.show();//lo mostramos
-        }
-    }//GEN-LAST:event_jmi_nuevo_tutorActionPerformed
 
     private void jmi_empresasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_empresasActionPerformed
         // Tomamos el valor de la variable estatica del jinternalframe
@@ -335,8 +246,5 @@ public class Escritorio extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmi_gestionar_alumno;
     private javax.swing.JMenuItem jmi_gestionar_profesor;
     private javax.swing.JMenuItem jmi_gestionar_tutor;
-    private javax.swing.JMenuItem jmi_nuevo_alumno;
-    private javax.swing.JMenuItem jmi_nuevo_profesor;
-    private javax.swing.JMenuItem jmi_nuevo_tutor;
     // End of variables declaration//GEN-END:variables
 }

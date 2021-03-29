@@ -12,14 +12,6 @@
             <Property name="text" type="java.lang.String" value="PROFESORES"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jmi_nuevo_profesor">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Nuevo profesor"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmi_nuevo_profesorActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmi_gestionar_profesor">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Gestionar Profesor"/>
@@ -46,14 +38,6 @@
             <Property name="text" type="java.lang.String" value="ALUMNOS"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jmi_nuevo_alumno">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Nuevo Alumno"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmi_nuevo_alumnoActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmi_gestionar_alumno">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Gestionar Alumno"/>
@@ -75,14 +59,6 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmi_empresasActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jmi_nuevo_tutor">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Nuevo Tutor"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmi_nuevo_tutorActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmi_gestionar_tutor">

@@ -82,7 +82,7 @@ public class Empresas extends javax.swing.JInternalFrame {
 
         jButton2.setText("NUEVO");
 
-        jLabel1.setText("Nuevo ciclo:");
+        jLabel1.setText("Nueva empresa:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

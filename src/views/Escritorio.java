@@ -16,6 +16,9 @@ import utils.Constantes;
 import views.dialogos.Acerca;
 import views.internalFrame.Ciclos;
 import views.internalFrame.Empresas;
+import views.internalFrame.GestionAlumnos;
+import views.internalFrame.GestionProfesores;
+import views.internalFrame.GestionTutores;
 
 
 /**
@@ -108,6 +111,11 @@ public class Escritorio extends javax.swing.JFrame {
         jm_alumnos.setText("ALUMNOS");
 
         jmi_gestionar_alumno.setText("Gestionar Alumno");
+        jmi_gestionar_alumno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_gestionar_alumnoActionPerformed(evt);
+            }
+        });
         jm_alumnos.add(jmi_gestionar_alumno);
 
         jMenuBar1.add(jm_alumnos);
@@ -124,6 +132,11 @@ public class Escritorio extends javax.swing.JFrame {
         jm_empresas.add(jmi_empresas);
 
         jmi_gestionar_tutor.setText("Gestionar Tutor");
+        jmi_gestionar_tutor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_gestionar_tutorActionPerformed(evt);
+            }
+        });
         jm_empresas.add(jmi_gestionar_tutor);
 
         jMenuBar1.add(jm_empresas);
@@ -158,7 +171,18 @@ public class Escritorio extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jmi_gestionar_profesorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_gestionar_profesorActionPerformed
-        // TODO add your handling code here:
+        // tomamos el valor de la variable estática del jinternal
+        String x = GestionProfesores.x;
+        
+        /*Comprobamos el valor de la variable de control, si es nula creamos una 
+        instancia, de lo contraeio no hacemos nada*/
+        if(x == null){
+            GestionProfesores profesor = new GestionProfesores();
+            this.jdp_escritorio.add(profesor);
+            this.jdp_escritorio.moveToFront(profesor);
+            profesor.show();
+        }
+        
     }//GEN-LAST:event_jmi_gestionar_profesorActionPerformed
 
     private void jm_ayudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jm_ayudaActionPerformed
@@ -197,6 +221,34 @@ public class Escritorio extends javax.swing.JFrame {
             empresa.show();//lo mostramos
         }
     }//GEN-LAST:event_jmi_empresasActionPerformed
+
+    private void jmi_gestionar_alumnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_gestionar_alumnoActionPerformed
+        // Tomamos el valor de la variable estatica del jinternalframe
+        String x = GestionAlumnos.x;
+        
+        /*Comprobamos el valor de la variable, si es nula creamos una instancia
+        de lo contrario no hacemos nada*/
+        if (x == null){
+            GestionAlumnos alumno = new GestionAlumnos();
+            this.jdp_escritorio.add(alumno);//agregamos al escritorio
+            this.jdp_escritorio.moveToFront(alumno);
+            alumno.show();//lo mostramos
+        }
+    }//GEN-LAST:event_jmi_gestionar_alumnoActionPerformed
+
+    private void jmi_gestionar_tutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_gestionar_tutorActionPerformed
+        // Tomamos el valor de la variable estatica del jinternalframe
+        String x = GestionTutores.x;
+        
+        /*Comprobamos el valor de la variable, si es nula creamos una instancia
+        de lo contrario no hacemos nada*/
+        if (x == null){
+            GestionTutores tutor = new GestionTutores();
+            this.jdp_escritorio.add(tutor);//agregamos al escritorio
+            this.jdp_escritorio.moveToFront(tutor);
+            tutor.show();//lo mostramos
+        }
+    }//GEN-LAST:event_jmi_gestionar_tutorActionPerformed
 
     /**
      * @param args the command line arguments

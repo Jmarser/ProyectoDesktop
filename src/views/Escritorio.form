@@ -42,6 +42,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Gestionar Alumno"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmi_gestionar_alumnoActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -65,6 +68,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Gestionar Tutor"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmi_gestionar_tutorActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

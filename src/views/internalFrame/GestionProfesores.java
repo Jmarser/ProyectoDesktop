@@ -5,6 +5,11 @@
  */
 package views.internalFrame;
 
+import java.awt.event.ItemEvent;
+import javax.swing.JOptionPane;
+import utils.Constantes;
+import utils.Generador;
+
 /**
  *
  * @author JMARSER
@@ -16,6 +21,52 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
     public GestionProfesores() {
         initComponents();
         this.x = "x";
+        initVentana();
+        initBotones();
+        llenarNiveles();
+        llenarProfesores();
+    }
+    
+    private void initVentana(){
+        this.setTitle("GESTIÓN DE PROFESORES");
+    }
+    
+    private void initBotones(){
+        if(this.jcb_profesores.getSelectedIndex() != 0){
+            this.btn_modificar.setEnabled(true);
+            this.btn_guardar.setEnabled(false);
+            this.btn_generar.setEnabled(false);
+            this.jpf_password.setEditable(false);
+        }else{
+            limpiarCampos();
+            this.btn_modificar.setEnabled(false);
+            this.btn_guardar.setEnabled(true);
+            this.btn_generar.setEnabled(true);
+            this.jpf_password.setEditable(true);
+        }
+    }
+    
+    private void llenarNiveles(){
+        for(int i = 0; i < Constantes.NIVELES.length; i++){
+            jcb_nivelSeguridad.addItem(Constantes.NIVELES[i].toString());
+        }
+    }
+    
+    private void llenarProfesores(){
+        this.jcb_profesores.addItem("Seleccione un profesor para editar.");
+        this.jcb_profesores.addItem("Juan Márquez Serrano");
+    }
+    
+    private void limpiarCampos(){
+        this.jcb_profesores.setSelectedIndex(0);
+        this.jcb_nivelSeguridad.setSelectedIndex(0);
+        this.jtf_nombre.setText("");
+        this.jtf_primerApellido.setText("");
+        this.jtf_segundoApellido.setText("");
+        this.jtf_email.setText("");
+        this.jtf_longitud.setText("");
+        this.jpf_password.setText("");
+        this.jcb_activo.setSelected(false);
     }
 
     /**
@@ -28,7 +79,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jcb_tutores = new javax.swing.JComboBox<>();
+        jcb_profesores = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         btn_nuevo = new javax.swing.JButton();
         btn_modificar = new javax.swing.JButton();
@@ -46,12 +97,12 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         jtf_primerApellido = new javax.swing.JTextField();
         jtf_segundoApellido = new javax.swing.JTextField();
         jtf_email = new javax.swing.JTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        jcb_activo = new javax.swing.JCheckBox();
         jPanel5 = new javax.swing.JPanel();
         jcb_nivelSeguridad = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
         jtf_longitud = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        btn_generar = new javax.swing.JButton();
         jpf_password = new javax.swing.JPasswordField();
 
         setClosable(true);
@@ -76,20 +127,26 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
             }
         });
 
+        jcb_profesores.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jcb_profesoresItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(116, 116, 116)
-                .addComponent(jcb_tutores, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jcb_profesores, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(272, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jcb_tutores, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jcb_profesores, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
 
@@ -102,6 +159,11 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         btn_guardar.setText("GUARDAR");
 
         btn_limpiar.setText("LIMPIAR");
+        btn_limpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_limpiarActionPerformed(evt);
+            }
+        });
 
         btn_cerrar.setText("CERRAR");
 
@@ -154,19 +216,30 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel5.setText("Password:");
 
-        jCheckBox1.setText("Activo");
+        jcb_activo.setText("Activo");
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Generar Password", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+
+        jcb_nivelSeguridad.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jcb_nivelSeguridadItemStateChanged(evt);
+            }
+        });
 
         jLabel6.setText("Longitud password:");
 
         jtf_longitud.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/random.png"))); // NOI18N
-        jButton1.setText("GENERAR");
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+        btn_generar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/random.png"))); // NOI18N
+        btn_generar.setText("GENERAR");
+        btn_generar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_generar.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        btn_generar.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+        btn_generar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_generarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -184,7 +257,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
                             .addComponent(jcb_nivelSeguridad, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(10, 10, 10))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btn_generar)
                         .addGap(58, 58, 58))))
         );
         jPanel5Layout.setVerticalGroup(
@@ -197,11 +270,9 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jtf_longitud, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(btn_generar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        jpf_password.setText("jPasswordField1");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -210,7 +281,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jCheckBox1)
+                    .addComponent(jcb_activo)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -256,7 +327,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
                             .addComponent(jpf_password, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(jCheckBox1)
+                .addComponent(jcb_activo)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -287,15 +358,45 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         this.x = null;
     }//GEN-LAST:event_formInternalFrameClosing
 
+    private void jcb_nivelSeguridadItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcb_nivelSeguridadItemStateChanged
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            longitudMinima();
+        }
+    }//GEN-LAST:event_jcb_nivelSeguridadItemStateChanged
+
+    private void btn_generarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_generarActionPerformed
+        if(this.jcb_nivelSeguridad.getSelectedIndex() != 0){
+            if(!this.jtf_longitud.getText().equals("")){
+                this.jpf_password.setText(new Generador().getClave(
+                        this.jcb_nivelSeguridad.getSelectedItem().toString(),
+                        Integer.parseInt(this.jtf_longitud.getText())));
+            }else{
+                JOptionPane.showMessageDialog(null, "Debe indicar una longitud válida.");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Debe indicar un nivel de seguridad.");
+        }
+    }//GEN-LAST:event_btn_generarActionPerformed
+
+    private void jcb_profesoresItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcb_profesoresItemStateChanged
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            initBotones();
+        }
+    }//GEN-LAST:event_jcb_profesoresItemStateChanged
+
+    private void btn_limpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_limpiarActionPerformed
+        
+        limpiarCampos();
+    }//GEN-LAST:event_btn_limpiarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_cerrar;
+    private javax.swing.JButton btn_generar;
     private javax.swing.JButton btn_guardar;
     private javax.swing.JButton btn_limpiar;
     private javax.swing.JButton btn_modificar;
     private javax.swing.JButton btn_nuevo;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -307,8 +408,9 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JCheckBox jcb_activo;
     private javax.swing.JComboBox<String> jcb_nivelSeguridad;
-    private javax.swing.JComboBox<String> jcb_tutores;
+    private javax.swing.JComboBox<String> jcb_profesores;
     private javax.swing.JPasswordField jpf_password;
     private javax.swing.JTextField jtf_email;
     private javax.swing.JTextField jtf_longitud;
@@ -316,4 +418,26 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jtf_primerApellido;
     private javax.swing.JTextField jtf_segundoApellido;
     // End of variables declaration//GEN-END:variables
+
+    private void longitudMinima() {
+        if(this.jcb_nivelSeguridad.getSelectedIndex() != 0){
+            String nivel = this.jcb_nivelSeguridad.getSelectedItem().toString();
+            switch(nivel){
+                case Constantes.BAJO:
+                    this.jtf_longitud.setText(String.valueOf(Constantes.LONG_LOW));
+                    break;
+                case Constantes.MEDIO:
+                    this.jtf_longitud.setText(String.valueOf(Constantes.LONG_MEDIUM));
+                    break;
+                case Constantes.ALTO:
+                    this.jtf_longitud.setText(String.valueOf(Constantes.LONG_HIGH));
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Indique un nivel de seguridad.");
+                    break;
+            }
+        }else{
+            this.jtf_longitud.setText("");
+        }
+    }
 }

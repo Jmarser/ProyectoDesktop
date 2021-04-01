@@ -24,10 +24,15 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" alignment="0" min="-2" pref="1189" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                      <Component id="jScrollPane1" min="-2" pref="1124" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -60,15 +65,15 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTextArea" name="jTextArea1">
+        <Component class="javax.swing.JTextArea" name="jta_descripcion">
           <Properties>
             <Property name="columns" type="int" value="20"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Dialog" size="18" style="1"/>
+              <Font name="Dialog" size="14" style="1"/>
             </Property>
             <Property name="lineWrap" type="boolean" value="true"/>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="   &#xa;Proyecto final de curso del ciclo de desarrollo de aplicaciones multiplataformas.&#xa;&#xa;Desarrollardor: Juan M&#xe1;rquez Serrano.&#xa;&#xa;Proyecto con el que se pretende actualizar al control de la FCT de los alumnos llevando las fichas de control al siglo XXI. Las fichas se rellenar&#xe1;n desde una aplicaci&#xf3;n m&#xf3;vil y se almacenar&#xe1;n en una base de datos remota, los tutores tienen acceso a esas fichas y las pueden leer y firmar. &#xa;&#xa;Desde la aplicaci&#xf3;n de escritorio se realiza la gesti&#xf3;n de los usuarios y se gener&#xe1;n los informes con las fichas de cada uno de los alumnos.&#xa;&#xa;"/>
+            <Property name="text" type="java.lang.String" value="   &#xa;   Proyecto final de curso del ciclo de desarrollo de aplicaciones multiplataformas.&#xa;&#xa;   Desarrollardor: Juan M&#xe1;rquez Serrano.&#xa;&#xa;   Proyecto con el que se pretende actualizar el control de la FCT de los alumnos llevando las fichas di&#xe1;rias al siglo XXI. Las fichas se rellenar&#xe1;n desde una aplicaci&#xf3;n m&#xf3;vil y se almacenan en una base de datos remota gestionada por un servidor desarrollado en Spring boot. &#xa;Los tutores tienen acceso a las fichas pudiendo leerlas y firmarlas. &#xa;&#xa;   Desde la aplicaci&#xf3;n de escritorio se realiza la gesti&#xf3;n de los usuarios, tanto de los alumnos, profesores y tutores. Tambi&#xe9;n se gestionan los ciclos y las empresas.&#xa;"/>
             <Property name="wrapStyleWord" type="boolean" value="true"/>
           </Properties>
         </Component>

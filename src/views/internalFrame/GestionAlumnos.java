@@ -5,6 +5,11 @@
  */
 package views.internalFrame;
 
+import java.awt.event.ItemEvent;
+import javax.swing.JOptionPane;
+import utils.Constantes;
+import utils.Generador;
+
 /**
  *
  * @author JMARSER
@@ -12,10 +17,99 @@ package views.internalFrame;
 public class GestionAlumnos extends javax.swing.JInternalFrame {
 
     public static String x;
-    
+    private static final long serialVersionUID = 1L;
+
     public GestionAlumnos() {
         initComponents();
         this.x = "x";
+        initVentana();
+        llenarNiveles();
+        llenarAlumnos();
+        llenarCiclos();
+        llenarProfesores();
+        llenarTutores();
+        initBotones();
+    }
+
+    private void initVentana() {
+        this.setTitle("Gestión de alumnos");
+    }
+
+    private void initBotones() {
+        if (this.jcb_alumnos.getSelectedIndex() != 0) {
+            this.btn_modificar.setEnabled(true);
+            this.btn_guardar.setEnabled(false);
+            this.btn_generar.setEnabled(false);
+            this.jpf_password.setEditable(false);
+        } else {
+            //limpiarCampos();
+            this.btn_modificar.setEnabled(false);
+            this.btn_guardar.setEnabled(true);
+            this.btn_generar.setEnabled(true);
+            this.jpf_password.setEditable(true);
+        }
+    }
+
+    private void llenarNiveles() {
+        for (String nivel : Constantes.NIVELES) {
+            this.jcb_nivelSeguridad.addItem(nivel);
+        }
+    }
+
+    private void llenarAlumnos() {
+        this.jcb_alumnos.addItem("Seleccione un alumno para editar");
+        this.jcb_alumnos.addItem("Dolores cabrera");
+    }
+
+    private void llenarCiclos() {
+        this.jcb_ciclos.addItem("DAM");
+        this.jcb_ciclos.addItem("DAW");
+    }
+
+    private void llenarTutores() {
+        this.jcb_tutores.addItem("Seleccione un tutor para editar");
+        this.jcb_tutores.addItem("Lourdes arrabal");
+    }
+
+    private void llenarProfesores() {
+        this.jcb_profesores.addItem("Seleccione un profesor para editar.");
+        this.jcb_profesores.addItem("Juan Márquez Serrano");
+    }
+
+    private void longitudMinima() {
+        if (this.jcb_nivelSeguridad.getSelectedIndex() != 0) {
+            String nivel = this.jcb_nivelSeguridad.getSelectedItem().toString();
+            switch (nivel) {
+                case Constantes.BAJO:
+                    this.jtf_longitud.setText(String.valueOf(Constantes.LONG_LOW));
+                    break;
+                case Constantes.MEDIO:
+                    this.jtf_longitud.setText(String.valueOf(Constantes.LONG_MEDIUM));
+                    break;
+                case Constantes.ALTO:
+                    this.jtf_longitud.setText(String.valueOf(Constantes.LONG_HIGH));
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Indique un nivel válido");
+                    break;
+            }
+        } else {
+            this.jtf_longitud.setText("");
+        }
+    }
+
+    private void limpiarCampos() {
+        this.jcb_alumnos.setSelectedIndex(0);
+        this.jcb_nivelSeguridad.setSelectedIndex(0);
+        this.jcb_ciclos.setSelectedIndex(0);
+        this.jcb_profesores.setSelectedIndex(0);
+        this.jcb_tutores.setSelectedIndex(0);
+        this.jtf_nombre.setText("");
+        this.jtf_primerApellido.setText("");
+        this.jtf_segundoApellido.setText("");
+        this.jtf_email.setText("");
+        this.jpf_password.setText("");
+        this.checkBox_activo.setSelected(false);
     }
 
     /**
@@ -46,20 +140,20 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         jtf_primerApellido = new javax.swing.JTextField();
         jtf_segundoApellido = new javax.swing.JTextField();
         jtf_email = new javax.swing.JTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        checkBox_activo = new javax.swing.JCheckBox();
         jPanel5 = new javax.swing.JPanel();
         jcb_nivelSeguridad = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
         jtf_longitud = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        btn_generar = new javax.swing.JButton();
         jpf_password = new javax.swing.JPasswordField();
         jLabel9 = new javax.swing.JLabel();
-        jtf_ciclo = new javax.swing.JTextField();
+        jcb_ciclos = new javax.swing.JComboBox<>();
         jPanel6 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        jcb_profesores = new javax.swing.JComboBox<>();
+        jcb_tutores = new javax.swing.JComboBox<>();
 
         setClosable(true);
         setIconifiable(true);
@@ -80,6 +174,12 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
+
+        jcb_alumnos.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jcb_alumnosItemStateChanged(evt);
             }
         });
 
@@ -109,6 +209,11 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         btn_guardar.setText("GUARDAR");
 
         btn_limpiar.setText("LIMPIAR");
+        btn_limpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_limpiarActionPerformed(evt);
+            }
+        });
 
         btn_cerrar.setText("CERRAR");
 
@@ -161,19 +266,30 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel5.setText("Password:");
 
-        jCheckBox1.setText("Activo");
+        checkBox_activo.setText("Activo");
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Generar Password", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+
+        jcb_nivelSeguridad.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jcb_nivelSeguridadItemStateChanged(evt);
+            }
+        });
 
         jLabel6.setText("Longitud password:");
 
         jtf_longitud.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/random.png"))); // NOI18N
-        jButton1.setText("GENERAR");
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+        btn_generar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/random.png"))); // NOI18N
+        btn_generar.setText("GENERAR");
+        btn_generar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btn_generar.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        btn_generar.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+        btn_generar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_generarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -191,24 +307,22 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                             .addComponent(jcb_nivelSeguridad, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(10, 10, 10))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btn_generar)
                         .addGap(58, 58, 58))))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jcb_nivelSeguridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jcb_nivelSeguridad, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jtf_longitud, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(btn_generar)
                 .addContainerGap(16, Short.MAX_VALUE))
         );
-
-        jpf_password.setText("jPasswordField1");
 
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel9.setText("Ciclo:");
@@ -220,7 +334,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jCheckBox1)
+                    .addComponent(checkBox_activo)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -230,14 +344,14 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jtf_nombre)
                             .addComponent(jtf_primerApellido)
                             .addComponent(jtf_email)
                             .addComponent(jtf_segundoApellido)
                             .addComponent(jpf_password, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                            .addComponent(jtf_ciclo))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jcb_ciclos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(26, 26, 26)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16))
         );
@@ -269,12 +383,12 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jtf_ciclo, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jcb_ciclos, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(50, 50, 50)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                .addComponent(jCheckBox1)
+                .addComponent(checkBox_activo)
                 .addContainerGap())
         );
 
@@ -286,9 +400,9 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel8.setText("Tutor:");
 
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+        jcb_tutores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
+                jcb_tutoresActionPerformed(evt);
             }
         });
 
@@ -303,8 +417,8 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jcb_profesores, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jcb_tutores, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(131, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
@@ -313,11 +427,11 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                 .addGap(15, 15, 15)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jcb_profesores, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jcb_tutores, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15))
         );
 
@@ -352,21 +466,49 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         this.x = null;
     }//GEN-LAST:event_formInternalFrameClosing
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+    private void jcb_tutoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcb_tutoresActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox2ActionPerformed
+    }//GEN-LAST:event_jcb_tutoresActionPerformed
+
+    private void jcb_nivelSeguridadItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcb_nivelSeguridadItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            longitudMinima();
+        }
+    }//GEN-LAST:event_jcb_nivelSeguridadItemStateChanged
+
+    private void jcb_alumnosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcb_alumnosItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            initBotones();
+        }
+    }//GEN-LAST:event_jcb_alumnosItemStateChanged
+
+    private void btn_limpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_limpiarActionPerformed
+        limpiarCampos();
+    }//GEN-LAST:event_btn_limpiarActionPerformed
+
+    private void btn_generarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_generarActionPerformed
+        if (this.jcb_nivelSeguridad.getSelectedIndex() != 0) {
+            if (!this.jtf_longitud.getText().equals("")) {
+                this.jpf_password.setText(new Generador().getClave(
+                        this.jcb_nivelSeguridad.getSelectedItem().toString(),
+                        Integer.parseInt(this.jtf_longitud.getText())));
+            } else {
+                JOptionPane.showMessageDialog(null, "Indique una longitud válida");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Indique un nivel de seguridad válido");
+        }
+    }//GEN-LAST:event_btn_generarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_cerrar;
+    private javax.swing.JButton btn_generar;
     private javax.swing.JButton btn_guardar;
     private javax.swing.JButton btn_limpiar;
     private javax.swing.JButton btn_modificar;
     private javax.swing.JButton btn_nuevo;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JCheckBox checkBox_activo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -383,9 +525,11 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JComboBox<String> jcb_alumnos;
+    private javax.swing.JComboBox<String> jcb_ciclos;
     private javax.swing.JComboBox<String> jcb_nivelSeguridad;
+    private javax.swing.JComboBox<String> jcb_profesores;
+    private javax.swing.JComboBox<String> jcb_tutores;
     private javax.swing.JPasswordField jpf_password;
-    private javax.swing.JTextField jtf_ciclo;
     private javax.swing.JTextField jtf_email;
     private javax.swing.JTextField jtf_longitud;
     private javax.swing.JTextField jtf_nombre;

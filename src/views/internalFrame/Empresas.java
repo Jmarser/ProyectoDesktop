@@ -18,14 +18,17 @@ public class Empresas extends javax.swing.JInternalFrame {
     
     //variable estática con la que controlamos que sólo se pueda instanciar una ventana de este clase
     public static String x;
-    /**
-     * Creates new form MostrarCiclos
-     */
+
+    
     public Empresas() {
         initComponents();
         this.x = "x";
+        initVentana();
     }
 
+    private void initVentana(){
+        this.setTitle("GESTIÓN DE EMPRESAS");
+    }
     /*método con el que limpiamos la tabla*/
     private void limpiarTabla(){
         modelo_tabla.setRowCount(0);
@@ -40,10 +43,10 @@ public class Empresas extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
+        jt_listaEmpresas = new javax.swing.JTable();
+        btn_guardar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jtf_nuevaEmpresa = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -67,7 +70,7 @@ public class Empresas extends javax.swing.JInternalFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jt_listaEmpresas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -78,9 +81,9 @@ public class Empresas extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jt_listaEmpresas);
 
-        jButton2.setText("NUEVO");
+        btn_guardar.setText("GUARDAR");
 
         jLabel1.setText("Nueva empresa:");
 
@@ -93,9 +96,9 @@ public class Empresas extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jtf_nuevaEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton2)))
+                        .addComponent(btn_guardar)))
                 .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
@@ -104,9 +107,9 @@ public class Empresas extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jtf_nuevaEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btn_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
@@ -122,10 +125,10 @@ public class Empresas extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btn_guardar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable jt_listaEmpresas;
+    private javax.swing.JTextField jtf_nuevaEmpresa;
     // End of variables declaration//GEN-END:variables
 }

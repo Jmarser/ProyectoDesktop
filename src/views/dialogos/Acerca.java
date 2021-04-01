@@ -17,6 +17,13 @@ public class Acerca extends javax.swing.JDialog {
     public Acerca(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        initVentana();
+    }
+    
+    private void initVentana(){
+        this.setTitle("Acerca de...");
+        this.jta_descripcion.setEditable(false);
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -30,29 +37,32 @@ public class Acerca extends javax.swing.JDialog {
 
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jta_descripcion = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/logo.jpg"))); // NOI18N
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("   \nProyecto final de curso del ciclo de desarrollo de aplicaciones multiplataformas.\n\nDesarrollardor: Juan Márquez Serrano.\n\nProyecto con el que se pretende actualizar al control de la FCT de los alumnos llevando las fichas de control al siglo XXI. Las fichas se rellenarán desde una aplicación móvil y se almacenarán en una base de datos remota, los tutores tienen acceso a esas fichas y las pueden leer y firmar. \n\nDesde la aplicación de escritorio se realiza la gestión de los usuarios y se generán los informes con las fichas de cada uno de los alumnos.\n\n");
-        jTextArea1.setWrapStyleWord(true);
-        jScrollPane1.setViewportView(jTextArea1);
+        jta_descripcion.setColumns(20);
+        jta_descripcion.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jta_descripcion.setLineWrap(true);
+        jta_descripcion.setRows(5);
+        jta_descripcion.setText("   \n   Proyecto final de curso del ciclo de desarrollo de aplicaciones multiplataformas.\n\n   Desarrollardor: Juan Márquez Serrano.\n\n   Proyecto con el que se pretende actualizar el control de la FCT de los alumnos llevando las fichas diárias al siglo XXI. Las fichas se rellenarán desde una aplicación móvil y se almacenan en una base de datos remota gestionada por un servidor desarrollado en Spring boot. \nLos tutores tienen acceso a las fichas pudiendo leerlas y firmarlas. \n\n   Desde la aplicación de escritorio se realiza la gestión de los usuarios, tanto de los alumnos, profesores y tutores. También se gestionan los ciclos y las empresas.\n");
+        jta_descripcion.setWrapStyleWord(true);
+        jScrollPane1.setViewportView(jta_descripcion);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1189, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1124, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -113,6 +123,6 @@ public class Acerca extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jta_descripcion;
     // End of variables declaration//GEN-END:variables
 }

@@ -17,7 +17,8 @@ import utils.Generador;
 public class GestionProfesores extends javax.swing.JInternalFrame {
 
     public static String x;
-    
+    private static final long serialVersionUID = 1L;
+
     public GestionProfesores() {
         initComponents();
         this.x = "x";
@@ -26,18 +27,18 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         llenarNiveles();
         llenarProfesores();
     }
-    
-    private void initVentana(){
+
+    private void initVentana() {
         this.setTitle("GESTIÓN DE PROFESORES");
     }
-    
-    private void initBotones(){
-        if(this.jcb_profesores.getSelectedIndex() != 0){
+
+    private void initBotones() {
+        if (this.jcb_profesores.getSelectedIndex() != 0) {
             this.btn_modificar.setEnabled(true);
             this.btn_guardar.setEnabled(false);
             this.btn_generar.setEnabled(false);
             this.jpf_password.setEditable(false);
-        }else{
+        } else {
             limpiarCampos();
             this.btn_modificar.setEnabled(false);
             this.btn_guardar.setEnabled(true);
@@ -45,19 +46,19 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
             this.jpf_password.setEditable(true);
         }
     }
-    
-    private void llenarNiveles(){
-        for(int i = 0; i < Constantes.NIVELES.length; i++){
-            jcb_nivelSeguridad.addItem(Constantes.NIVELES[i].toString());
+
+    private void llenarNiveles() {
+        for (String nivel : Constantes.NIVELES) {
+            this.jcb_nivelSeguridad.addItem(nivel);
         }
     }
-    
-    private void llenarProfesores(){
+
+    private void llenarProfesores() {
         this.jcb_profesores.addItem("Seleccione un profesor para editar.");
         this.jcb_profesores.addItem("Juan Márquez Serrano");
     }
-    
-    private void limpiarCampos(){
+
+    private void limpiarCampos() {
         this.jcb_profesores.setSelectedIndex(0);
         this.jcb_nivelSeguridad.setSelectedIndex(0);
         this.jtf_nombre.setText("");
@@ -67,6 +68,28 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         this.jtf_longitud.setText("");
         this.jpf_password.setText("");
         this.jcb_activo.setSelected(false);
+    }
+
+    private void longitudMinima() {
+        if (this.jcb_nivelSeguridad.getSelectedIndex() != 0) {
+            String nivel = this.jcb_nivelSeguridad.getSelectedItem().toString();
+            switch (nivel) {
+                case Constantes.BAJO:
+                    this.jtf_longitud.setText(String.valueOf(Constantes.LONG_LOW));
+                    break;
+                case Constantes.MEDIO:
+                    this.jtf_longitud.setText(String.valueOf(Constantes.LONG_MEDIUM));
+                    break;
+                case Constantes.ALTO:
+                    this.jtf_longitud.setText(String.valueOf(Constantes.LONG_HIGH));
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Indique un nivel de seguridad.");
+                    break;
+            }
+        } else {
+            this.jtf_longitud.setText("");
+        }
     }
 
     /**
@@ -264,7 +287,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jcb_nivelSeguridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jcb_nivelSeguridad, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -359,33 +382,33 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameClosing
 
     private void jcb_nivelSeguridadItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcb_nivelSeguridadItemStateChanged
-        if(evt.getStateChange() == ItemEvent.SELECTED){
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
             longitudMinima();
         }
     }//GEN-LAST:event_jcb_nivelSeguridadItemStateChanged
 
     private void btn_generarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_generarActionPerformed
-        if(this.jcb_nivelSeguridad.getSelectedIndex() != 0){
-            if(!this.jtf_longitud.getText().equals("")){
+        if (this.jcb_nivelSeguridad.getSelectedIndex() != 0) {
+            if (!this.jtf_longitud.getText().equals("")) {
                 this.jpf_password.setText(new Generador().getClave(
                         this.jcb_nivelSeguridad.getSelectedItem().toString(),
                         Integer.parseInt(this.jtf_longitud.getText())));
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Debe indicar una longitud válida.");
             }
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Debe indicar un nivel de seguridad.");
         }
     }//GEN-LAST:event_btn_generarActionPerformed
 
     private void jcb_profesoresItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcb_profesoresItemStateChanged
-        if(evt.getStateChange() == ItemEvent.SELECTED){
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
             initBotones();
         }
     }//GEN-LAST:event_jcb_profesoresItemStateChanged
 
     private void btn_limpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_limpiarActionPerformed
-        
+
         limpiarCampos();
     }//GEN-LAST:event_btn_limpiarActionPerformed
 
@@ -419,25 +442,4 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jtf_segundoApellido;
     // End of variables declaration//GEN-END:variables
 
-    private void longitudMinima() {
-        if(this.jcb_nivelSeguridad.getSelectedIndex() != 0){
-            String nivel = this.jcb_nivelSeguridad.getSelectedItem().toString();
-            switch(nivel){
-                case Constantes.BAJO:
-                    this.jtf_longitud.setText(String.valueOf(Constantes.LONG_LOW));
-                    break;
-                case Constantes.MEDIO:
-                    this.jtf_longitud.setText(String.valueOf(Constantes.LONG_MEDIUM));
-                    break;
-                case Constantes.ALTO:
-                    this.jtf_longitud.setText(String.valueOf(Constantes.LONG_HIGH));
-                    break;
-                default:
-                    JOptionPane.showMessageDialog(null, "Indique un nivel de seguridad.");
-                    break;
-            }
-        }else{
-            this.jtf_longitud.setText("");
-        }
-    }
 }

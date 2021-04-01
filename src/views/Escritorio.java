@@ -6,12 +6,7 @@
 package views;
 
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import utils.Constantes;
 import views.dialogos.Acerca;
 import views.internalFrame.Ciclos;
@@ -150,6 +145,11 @@ public class Escritorio extends javax.swing.JFrame {
         });
 
         jmi_acerca.setText("Acerca de...");
+        jmi_acerca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_acercaActionPerformed(evt);
+            }
+        });
         jm_ayuda.add(jmi_acerca);
 
         jMenuBar1.add(jm_ayuda);
@@ -186,11 +186,7 @@ public class Escritorio extends javax.swing.JFrame {
     }//GEN-LAST:event_jmi_gestionar_profesorActionPerformed
 
     private void jm_ayudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jm_ayudaActionPerformed
-        // TODO add your handling code here:
-        Acerca acerca = new Acerca(this, true);
-        this.jdp_escritorio.add(acerca);
-        this.jdp_escritorio.moveToFront(acerca);
-        acerca.setVisible(true);
+        
     }//GEN-LAST:event_jm_ayudaActionPerformed
 
     private void jmi_ciclosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_ciclosActionPerformed
@@ -249,6 +245,11 @@ public class Escritorio extends javax.swing.JFrame {
             tutor.show();//lo mostramos
         }
     }//GEN-LAST:event_jmi_gestionar_tutorActionPerformed
+
+    private void jmi_acercaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_acercaActionPerformed
+        // TODO add your handling code here:
+        new Acerca(this, false).setVisible(true);
+    }//GEN-LAST:event_jmi_acercaActionPerformed
 
     /**
      * @param args the command line arguments

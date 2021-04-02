@@ -5,11 +5,15 @@
  */
 package models;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Jmarser
  */
-public abstract class Persona {
+public abstract class Persona implements Serializable{
+
+    private static final long serialVersionUID = 1L;
     
     private Long id;
     private String nombre;

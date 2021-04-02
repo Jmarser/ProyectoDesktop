@@ -23,6 +23,12 @@ public class ManagerDaoImpl implements ManagerDao{
     private TutorDao tutores;
     
     private AlumnoDao alumnos;
+    
+    private CicloDao ciclos;
+    
+    private EmpresaDao empresas;
+    
+    private LoginDao login;
 
     @Override
     public ProfesorDao getProfesorDao() {
@@ -46,5 +52,29 @@ public class ManagerDaoImpl implements ManagerDao{
             alumnos = new AlumnoDaoImpl(conn);
         }
         return alumnos;
+    }
+
+    @Override
+    public LoginDao getLoginDao() {
+        if(login == null){
+            login = new LoginDaoImpl(conn);
+        }
+        return login;
+    }
+
+    @Override
+    public CicloDao getCicloDao() {
+        if(ciclos == null){
+            ciclos = new CicloDaoImpl(conn);
+        }
+        return ciclos;
+    }
+
+    @Override
+    public EmpresaDao getEmpresaDao() {
+        if(empresas == null){
+            empresas = new EmpresaDaoImpl(conn);
+        }
+        return empresas;
     }
 }

@@ -10,9 +10,16 @@ package modelsDao;
  */
 public interface ManagerDao {
     
+    LoginDao getLoginDao();
+    
     ProfesorDao getProfesorDao();
     
     TutorDao getTutorDao();
     
     AlumnoDao getAlumnoDao();
+    
+    CicloDao getCicloDao();
+    
+    EmpresaDao getEmpresaDao();
+    
 }

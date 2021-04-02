@@ -10,6 +10,8 @@ package models;
  * @author Jmarser
  */
 public class Alumno extends Persona{
+
+    private static final long serialVersionUID = 1L;
     
     private String ciclo;
     private Profesor profesor;

@@ -12,6 +12,8 @@ import java.util.List;
  * @author Jmarser
  */
 public class Tutor extends Persona{
+
+    private static final long serialVersionUID = 1L;
     
     private String empresa;
     private List<Alumno> listaAlumnos;

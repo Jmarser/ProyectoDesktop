@@ -3,21 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package models;
+package modelsDao;
+
+import models.Login;
 
 /**
  *
  * @author JMARSER
  */
-public class Ciclo extends ClaseBaseExtra{
-    
-    private static final long serialVersionUID = 1L;
-
-    public Ciclo() {
-    }
-
-    public Ciclo(Long id, String nombre) {
-        super(id, nombre);
-    }
+public interface LoginDao extends DAO<Login>{
     
 }

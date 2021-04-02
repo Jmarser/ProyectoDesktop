@@ -24,5 +24,11 @@ public class Profesor extends Persona{
         super(id, nombre, primerApellido, segundoApellido, email, password, activo);
         this.listaAlumnos = listaAlumnos;
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+    
     
 }

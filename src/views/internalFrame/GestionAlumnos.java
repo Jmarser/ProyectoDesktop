@@ -32,7 +32,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
     }
 
     private void initVentana() {
-        this.setTitle("Gestión de alumnos");
+        this.setTitle("GESTIÓN DE ALUMNOS");
     }
 
     private void initBotones() {
@@ -216,6 +216,11 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         });
 
         btn_cerrar.setText("CERRAR");
+        btn_cerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cerrarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -499,6 +504,11 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Indique un nivel de seguridad válido");
         }
     }//GEN-LAST:event_btn_generarActionPerformed
+
+    private void btn_cerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cerrarActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_btn_cerrarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

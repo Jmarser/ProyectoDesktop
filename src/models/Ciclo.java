@@ -19,5 +19,9 @@ public class Ciclo extends ClaseBaseExtra{
     public Ciclo(Long id, String nombre) {
         super(id, nombre);
     }
-    
+
+    @Override
+    public String toString() {
+        return super.toString();
+    } 
 }

@@ -189,6 +189,11 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         });
 
         btn_cerrar.setText("CERRAR");
+        btn_cerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cerrarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -411,6 +416,11 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
 
         limpiarCampos();
     }//GEN-LAST:event_btn_limpiarActionPerformed
+
+    private void btn_cerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cerrarActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_btn_cerrarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

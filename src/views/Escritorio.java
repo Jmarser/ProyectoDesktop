@@ -5,8 +5,17 @@
  */
 package views;
 
+import conexion.ConMySQL;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import utils.Constantes;
 import views.dialogos.Acerca;
 import views.internalFrame.Ciclos;
@@ -15,16 +24,17 @@ import views.internalFrame.GestionAlumnos;
 import views.internalFrame.GestionProfesores;
 import views.internalFrame.GestionTutores;
 
-
 /**
  *
  * @author Jmarser
  */
 public class Escritorio extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Escritorio
-     */
+    /*obtenemos la conexión a la base de datos, con lo que nos aseguraremos al 
+    cerrar el programa que cerramos la conexión con la base de datos.*/
+    //private Connection conn = ConMySQL.getConexion();
+
+
     public Escritorio() {
         initComponents();
         initVentana();
@@ -36,7 +46,7 @@ public class Escritorio extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);//centrado en la pantalla
 
         addIcono();
-
+        cerrarVentana();
     }
 
     /*Establecemos el icono de la aplicación*/
@@ -44,6 +54,42 @@ public class Escritorio extends javax.swing.JFrame {
         URL url = getClass().getResource(Constantes.RUTA_ICON_DESKTOP);
         ImageIcon icono = new ImageIcon(url);
         this.setIconImage(icono.getImage());
+    }
+
+    private void cerrarVentana() {
+        try {
+            this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            this.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent we) {
+                    salir();
+                }
+            });
+            this.setVisible(true);
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void salir() {
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Seguro que desea salir de la palicación?", "¿Salir?", JOptionPane.YES_NO_OPTION);
+        if (opcion == JOptionPane.YES_OPTION) {
+            /*antes de salir cerramos la conexión con la BDD, si la conexión esta 
+            establecida, en el caso de no estar establecida la conexión, nos 
+            saltamos la desconexión para evitar la excepción.*/
+            //
+            /*
+            if (conn != null) {
+                try {
+                    conn.close();
+                    System.out.println("Conexión con la base de datos cerrada.");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Escritorio.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            */
+            System.exit(0);
+        }
     }
 
     /**
@@ -173,20 +219,20 @@ public class Escritorio extends javax.swing.JFrame {
     private void jmi_gestionar_profesorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_gestionar_profesorActionPerformed
         // tomamos el valor de la variable estática del jinternal
         String x = GestionProfesores.x;
-        
+
         /*Comprobamos el valor de la variable de control, si es nula creamos una 
         instancia, de lo contraeio no hacemos nada*/
-        if(x == null){
+        if (x == null) {
             GestionProfesores profesor = new GestionProfesores();
             this.jdp_escritorio.add(profesor);
             this.jdp_escritorio.moveToFront(profesor);
             profesor.show();
         }
-        
+
     }//GEN-LAST:event_jmi_gestionar_profesorActionPerformed
 
     private void jm_ayudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jm_ayudaActionPerformed
-        
+
     }//GEN-LAST:event_jm_ayudaActionPerformed
 
     private void jmi_ciclosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_ciclosActionPerformed
@@ -207,10 +253,10 @@ public class Escritorio extends javax.swing.JFrame {
     private void jmi_empresasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_empresasActionPerformed
         // Tomamos el valor de la variable estatica del jinternalframe
         String x = Empresas.x;
-        
+
         /*Comprobamos el valor de la variable, si es nula creamos una instancia
         de lo contrario no hacemos nada*/
-        if (x == null){
+        if (x == null) {
             Empresas empresa = new Empresas();
             this.jdp_escritorio.add(empresa);//agregamos al escritorio
             this.jdp_escritorio.moveToFront(empresa);
@@ -221,10 +267,10 @@ public class Escritorio extends javax.swing.JFrame {
     private void jmi_gestionar_alumnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_gestionar_alumnoActionPerformed
         // Tomamos el valor de la variable estatica del jinternalframe
         String x = GestionAlumnos.x;
-        
+
         /*Comprobamos el valor de la variable, si es nula creamos una instancia
         de lo contrario no hacemos nada*/
-        if (x == null){
+        if (x == null) {
             GestionAlumnos alumno = new GestionAlumnos();
             this.jdp_escritorio.add(alumno);//agregamos al escritorio
             this.jdp_escritorio.moveToFront(alumno);
@@ -235,10 +281,10 @@ public class Escritorio extends javax.swing.JFrame {
     private void jmi_gestionar_tutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_gestionar_tutorActionPerformed
         // Tomamos el valor de la variable estatica del jinternalframe
         String x = GestionTutores.x;
-        
+
         /*Comprobamos el valor de la variable, si es nula creamos una instancia
         de lo contrario no hacemos nada*/
-        if (x == null){
+        if (x == null) {
             GestionTutores tutor = new GestionTutores();
             this.jdp_escritorio.add(tutor);//agregamos al escritorio
             this.jdp_escritorio.moveToFront(tutor);

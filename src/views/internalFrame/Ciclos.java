@@ -5,7 +5,11 @@
  */
 package views.internalFrame;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import models.Ciclo;
+import modelsDao.ManagerDaoImpl;
 
 /**
  *
@@ -13,8 +17,11 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Ciclos extends javax.swing.JInternalFrame {
 
+    private ManagerDaoImpl gestor = new ManagerDaoImpl();
+    
     //modelo para la tabla
-    DefaultTableModel modelo_tabla = new DefaultTableModel();
+    private DefaultTableModel modelo_tabla = new DefaultTableModel();
+    private List<Ciclo> listadoCiclos = new ArrayList<>();
     
     //variable estática con la que controlamos que sólo se pueda instanciar una ventana de este clase
     public static String x;
@@ -27,8 +34,49 @@ public class Ciclos extends javax.swing.JInternalFrame {
     
     private void initVentana(){
         this.setTitle("GESTIÓN DE CICLOS");
+        initTabla();
+        mostrarCiclos();
+    }
+    
+    private void initTabla(){
+        modelo_tabla.addColumn("Id");
+        modelo_tabla.addColumn("Nombre ciclo");
+        this.jt_listaCiclos.setModel(modelo_tabla);
     }
 
+    private void mostrarCiclos(){
+        limpiarTabla();
+        listadoCiclos = (ArrayList<Ciclo>)gestor.getCicloDao().getAll();
+        
+        Object[] linea = new Object[modelo_tabla.getColumnCount()];
+        
+        if(listadoCiclos != null){
+            for(int i = 0; i<listadoCiclos.size(); i++){
+                linea[0] = listadoCiclos.get(i).getId();
+                linea[1] = listadoCiclos.get(i).getNombre();
+                
+                modelo_tabla.addRow(linea);
+            }
+        }
+    }
+    
+    private void addCiclo(){
+        if(validarCampos()){
+            Ciclo ciclo = new Ciclo();
+            ciclo.setNombre(this.jtf_nuevoCiclo.getText());
+            
+            gestor.getCicloDao().insert(ciclo);
+        }
+        mostrarCiclos();
+    }
+    
+    private boolean validarCampos(){
+        if(!this.jtf_nuevoCiclo.getText().isEmpty()){
+            return true;
+        }else{
+            return false;
+        }
+    }
     /*método con el que limpiamos la tabla*/
     private void limpiarTabla(){
         modelo_tabla.setRowCount(0);
@@ -84,6 +132,11 @@ public class Ciclos extends javax.swing.JInternalFrame {
         jScrollPane1.setViewportView(jt_listaCiclos);
 
         btn_guardar.setText("GUARDAR");
+        btn_guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_guardarActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Nuevo ciclo:");
 
@@ -122,6 +175,10 @@ public class Ciclos extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         this.x = null;
     }//GEN-LAST:event_formInternalFrameClosing
+
+    private void btn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardarActionPerformed
+        addCiclo();
+    }//GEN-LAST:event_btn_guardarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

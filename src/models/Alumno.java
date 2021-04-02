@@ -50,6 +50,9 @@ public class Alumno extends Persona{
     public void setTutor(Tutor tutor) {
         this.tutor = tutor;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

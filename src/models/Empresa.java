@@ -19,5 +19,9 @@ public class Empresa extends ClaseBaseExtra{
     public Empresa(Long id, String nombre) {
         super(id, nombre);
     }
-       
+
+    @Override
+    public String toString() {
+        return super.toString();
+    } 
 }

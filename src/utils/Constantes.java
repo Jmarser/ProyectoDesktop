@@ -1,8 +1,8 @@
 package utils;
 
 /**
- * Clase que contiene las constantes y expresiones regulares utillizadas para
- * generar las claves de seguridad
+ * Clase que contiene las constantes, expresiones regulares y datos de acceso
+ * a la base de datos
  *
  * @author Jmarser
  * @version 1.0, 07/01/2021
@@ -15,11 +15,13 @@ public class Constantes {
     public static final String RUTA_ICON_DESKTOP = "/recursos/icono_desktop.png";
 
     /* ----- Constantes para la conexión con la base de datos ----- */
-    public static final String DRIVER_MYSQL = "com.mysql.jdbc.Driver";
-    public static final String BASE_DATOS = "";
-    public static final String URL_MYSQL = "jdbc:mysql://localhost/" + BASE_DATOS;
-    public static final String USER_MYSQL = "";
-    public static final String PASS_MYSQL = "";
+    public static final String DRIVER_MYSQL = "com.mysql.cj.jdbc.Driver";
+    public static final String BASE_DATOS = "proyecto_api";
+    public static final String URL_MYSQL = "jdbc:mysql://localhost:3306/" + BASE_DATOS+"useUnicode=true&use"
+            + "JDBCCompliantTimeZoneShift=true&useLegacyDatetimeCode=false&"
+            + "serverTimezone=UTC";
+    public static final String USER_MYSQL = "root";
+    public static final String PASS_MYSQL = "1234";
 
     /* ----- Patrones de verificación ----- */
     

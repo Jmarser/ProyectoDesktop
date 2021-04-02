@@ -42,6 +42,9 @@ public class Tutor extends Persona{
     public void setListaAlumnos(List<Alumno> listaAlumnos) {
         this.listaAlumnos = listaAlumnos;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

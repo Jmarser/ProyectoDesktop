@@ -5,7 +5,11 @@
  */
 package views.internalFrame;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import models.Empresa;
 
 /**
  *
@@ -14,7 +18,8 @@ import javax.swing.table.DefaultTableModel;
 public class Empresas extends javax.swing.JInternalFrame {
 
     //modelo para la tabla
-    DefaultTableModel modelo_tabla = new DefaultTableModel();
+    private DefaultTableModel modelo_tabla = new DefaultTableModel();
+    private List<Empresa> listadoEmpresas = new ArrayList<>();
     
     //variable estática con la que controlamos que sólo se pueda instanciar una ventana de este clase
     public static String x;
@@ -28,10 +33,34 @@ public class Empresas extends javax.swing.JInternalFrame {
 
     private void initVentana(){
         this.setTitle("GESTIÓN DE EMPRESAS");
+        initTabla();
     }
+    
+    private void initTabla(){
+        modelo_tabla.addColumn("Id");
+        modelo_tabla.addColumn("Empresa");
+        this.jt_listaEmpresas.setModel(modelo_tabla);
+    }
+    
+    private void addEmpresa(){
+        if(validarCampos()){
+            
+        }else{
+            JOptionPane.showMessageDialog(null, "Ingrese un nombre para la empresa.");
+        }
+    }
+    
     /*método con el que limpiamos la tabla*/
     private void limpiarTabla(){
         modelo_tabla.setRowCount(0);
+    }
+    
+    private boolean validarCampos(){
+        if(!this.jtf_nuevaEmpresa.getText().isEmpty()){
+            return true;
+        }else{
+            return false;
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -84,6 +113,11 @@ public class Empresas extends javax.swing.JInternalFrame {
         jScrollPane1.setViewportView(jt_listaEmpresas);
 
         btn_guardar.setText("GUARDAR");
+        btn_guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_guardarActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Nueva empresa:");
 
@@ -122,6 +156,11 @@ public class Empresas extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         this.x = null;
     }//GEN-LAST:event_formInternalFrameClosing
+
+    private void btn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardarActionPerformed
+        // TODO add your handling code here:
+        addEmpresa();
+    }//GEN-LAST:event_btn_guardarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

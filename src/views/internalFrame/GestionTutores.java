@@ -198,6 +198,11 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         });
 
         btn_cerrar.setText("CERRAR");
+        btn_cerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cerrarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -410,7 +415,7 @@ public class GestionTutores extends javax.swing.JInternalFrame {
     private void btn_generarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_generarActionPerformed
         if(this.jcb_nivelSeguridad.getSelectedIndex() != 0){
             if(!this.jtf_longitud.getText().equals("")){
-                this.jtf_longitud.setText(new Generador().getClave(
+                this.jpf_password.setText(new Generador().getClave(
                         this.jcb_nivelSeguridad.getSelectedItem().toString(),
                         Integer.parseInt(this.jtf_longitud.getText())));
             }else{
@@ -430,6 +435,11 @@ public class GestionTutores extends javax.swing.JInternalFrame {
     private void btn_limpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_limpiarActionPerformed
         limpiarCampos();
     }//GEN-LAST:event_btn_limpiarActionPerformed
+
+    private void btn_cerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cerrarActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_btn_cerrarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

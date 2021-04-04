@@ -1,13 +1,12 @@
 package utils;
 
 /**
- * Clase que contiene las constantes, expresiones regulares y datos de acceso
- * a la base de datos
+ * Clase que contiene las constantes, expresiones regulares y datos de acceso a
+ * la base de datos
  *
  * @author Jmarser
  * @version 1.0, 07/01/2021
  */
-
 public class Constantes {
 
     /* --- --- Rutas de las imagenes --- --- */
@@ -17,14 +16,12 @@ public class Constantes {
     /* ----- Constantes para la conexión con la base de datos ----- */
     public static final String DRIVER_MYSQL = "com.mysql.cj.jdbc.Driver";
     public static final String BASE_DATOS = "proyecto_api";
-    public static final String URL_MYSQL = "jdbc:mysql://localhost:3306/" + BASE_DATOS+"useUnicode=true&use"
-            + "JDBCCompliantTimeZoneShift=true&useLegacyDatetimeCode=false&"
-            + "serverTimezone=UTC";
+    public static final String URL_MYSQL = "jdbc:mysql://localhost:3306/"+ BASE_DATOS +"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+    //"jdbc:mysql://localhost:3306/" + BASE_DATOS + "?useTimezone=true&serverTimeZone=UTC";
     public static final String USER_MYSQL = "root";
     public static final String PASS_MYSQL = "1234";
 
     /* ----- Patrones de verificación ----- */
-    
  /* ----- ----- */
 
  /* ----- constantes para la generación de las claves ----- */

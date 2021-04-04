@@ -36,8 +36,9 @@ public class CicloDaoImpl implements CicloDao {
         PreparedStatement ps = null;
 
         try {
-            ps = conn.prepareCall(consulta);
-            ps.setString(1, a.getNombre());
+            ps = conn.prepareCall("INSERT INTO ciclos (id, nombre) VALUES (?,?)");
+            ps.setLong(1, 1L);
+            ps.setString(2, a.getNombre());
 
             ps.executeUpdate();
 
@@ -74,7 +75,7 @@ public class CicloDaoImpl implements CicloDao {
 
         try {
             st = conn.createStatement();
-            rs = st.executeQuery(consulta);
+            rs = st.executeQuery("SELECT * FROM ciclos");
 
             while (rs.next()) {
                 Ciclo ciclo = new Ciclo();

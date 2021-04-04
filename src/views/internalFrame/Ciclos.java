@@ -7,6 +7,7 @@ package views.internalFrame;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.Ciclo;
 import modelsDao.ManagerDaoImpl;
@@ -18,75 +19,78 @@ import modelsDao.ManagerDaoImpl;
 public class Ciclos extends javax.swing.JInternalFrame {
 
     private ManagerDaoImpl gestor = new ManagerDaoImpl();
-    
+
     //modelo para la tabla
     private DefaultTableModel modelo_tabla = new DefaultTableModel();
     private List<Ciclo> listadoCiclos = new ArrayList<>();
-    
+
     //variable estática con la que controlamos que sólo se pueda instanciar una ventana de este clase
     public static String x;
-   
+
     public Ciclos() {
         initComponents();
         this.x = "x";
         initVentana();
     }
-    
-    private void initVentana(){
+
+    private void initVentana() {
         this.setTitle("GESTIÓN DE CICLOS");
         initTabla();
         mostrarCiclos();
     }
-    
-    private void initTabla(){
+
+    private void initTabla() {
         modelo_tabla.addColumn("Id");
         modelo_tabla.addColumn("Nombre ciclo");
         this.jt_listaCiclos.setModel(modelo_tabla);
     }
 
-    private void mostrarCiclos(){
+    private void mostrarCiclos() {
         limpiarTabla();
-        listadoCiclos = (ArrayList<Ciclo>)gestor.getCicloDao().getAll();
-        
+        listadoCiclos = (ArrayList<Ciclo>) gestor.getCicloDao().getAll();
+
         Object[] linea = new Object[modelo_tabla.getColumnCount()];
-        
-        if(listadoCiclos != null){
-            for(int i = 0; i<listadoCiclos.size(); i++){
+
+        if (listadoCiclos != null) {
+            for (int i = 0; i < listadoCiclos.size(); i++) {
                 linea[0] = listadoCiclos.get(i).getId();
                 linea[1] = listadoCiclos.get(i).getNombre();
-                
+
                 modelo_tabla.addRow(linea);
             }
         }
     }
-    
-    private void addCiclo(){
-        if(validarCampos()){
+
+    private void addCiclo() {
+        if (validarCampos()) {
             Ciclo ciclo = new Ciclo();
             ciclo.setNombre(this.jtf_nuevoCiclo.getText());
-            
+
             gestor.getCicloDao().insert(ciclo);
+        } else {
+            JOptionPane.showMessageDialog(null, "Ingrese un nombre para el ciclo.");
         }
         limpiarCampo();
         mostrarCiclos();
     }
-    
-    private boolean validarCampos(){
-        if(!this.jtf_nuevoCiclo.getText().isEmpty()){
+
+    private boolean validarCampos() {
+        if (!this.jtf_nuevoCiclo.getText().isEmpty()) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-    
-    private void limpiarCampo(){
+
+    private void limpiarCampo() {
         this.jtf_nuevoCiclo.setText("");
     }
-    
+
     /*método con el que limpiamos la tabla*/
-    private void limpiarTabla(){
+    private void limpiarTabla() {
         modelo_tabla.setRowCount(0);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

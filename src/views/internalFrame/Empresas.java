@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.Empresa;
+import modelsDao.ManagerDaoImpl;
 
 /**
  *
@@ -17,51 +18,78 @@ import models.Empresa;
  */
 public class Empresas extends javax.swing.JInternalFrame {
 
+    private ManagerDaoImpl gestor = new ManagerDaoImpl();
+
     //modelo para la tabla
     private DefaultTableModel modelo_tabla = new DefaultTableModel();
     private List<Empresa> listadoEmpresas = new ArrayList<>();
-    
+
     //variable estática con la que controlamos que sólo se pueda instanciar una ventana de este clase
     public static String x;
 
-    
     public Empresas() {
         initComponents();
         this.x = "x";
         initVentana();
     }
 
-    private void initVentana(){
+    private void initVentana() {
         this.setTitle("GESTIÓN DE EMPRESAS");
         initTabla();
     }
-    
-    private void initTabla(){
+
+    private void initTabla() {
         modelo_tabla.addColumn("Id");
         modelo_tabla.addColumn("Empresa");
         this.jt_listaEmpresas.setModel(modelo_tabla);
     }
-    
-    private void addEmpresa(){
-        if(validarCampos()){
-            
-        }else{
-            JOptionPane.showMessageDialog(null, "Ingrese un nombre para la empresa.");
+
+    private void mostrarEmpresas() {
+        limpiarTabla();
+        listadoEmpresas = (ArrayList<Empresa>) gestor.getEmpresaDao().getAll();
+
+        Object[] linea = new Object[modelo_tabla.getColumnCount()];
+
+        if (listadoEmpresas != null) {
+            for (int i = 0; i < listadoEmpresas.size(); i++) {
+                linea[0] = listadoEmpresas.get(i).getId();
+                linea[1] = listadoEmpresas.get(i).getNombre();
+
+                modelo_tabla.addRow(linea);
+            }
         }
     }
-    
+
+    private void addEmpresa() {
+        if (validarCampos()) {
+            Empresa emp = new Empresa();
+            emp.setNombre(this.jtf_nuevaEmpresa.getText());
+            
+            gestor.getEmpresaDao().insert(emp);
+        } else {
+            JOptionPane.showMessageDialog(null, "Ingrese un nombre para la empresa.");
+        }
+        limpiarCampos();
+        mostrarEmpresas();
+    }
+
+    private void limpiarCampos() {
+        this.jtf_nuevaEmpresa.setText("");
+    }
+
     /*método con el que limpiamos la tabla*/
-    private void limpiarTabla(){
+    private void limpiarTabla() {
         modelo_tabla.setRowCount(0);
     }
-    
-    private boolean validarCampos(){
-        if(!this.jtf_nuevaEmpresa.getText().isEmpty()){
+
+    private boolean validarCampos() {
+        if (!this.jtf_nuevaEmpresa.getText().isEmpty()) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

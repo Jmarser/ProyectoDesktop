@@ -34,7 +34,6 @@ public class Escritorio extends javax.swing.JFrame {
     cerrar el programa que cerramos la conexión con la base de datos.*/
     private Connection conn = ConMySQL.getConexion();
 
-
     public Escritorio() {
         initComponents();
         initVentana();
@@ -77,17 +76,11 @@ public class Escritorio extends javax.swing.JFrame {
             /*antes de salir cerramos la conexión con la BDD, si la conexión esta 
             establecida, en el caso de no estar establecida la conexión, nos 
             saltamos la desconexión para evitar la excepción.*/
-            //
-            
+
             if (conn != null) {
-                try {
-                    conn.close();
-                    System.out.println("Conexión con la base de datos cerrada.");
-                } catch (SQLException ex) {
-                    Logger.getLogger(Escritorio.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                ConMySQL.desconectar();
+                System.out.println("Conexión con la base de datos cerrada.");
             }
-            
             System.exit(0);
         }
     }
@@ -109,8 +102,8 @@ public class Escritorio extends javax.swing.JFrame {
         jm_alumnos = new javax.swing.JMenu();
         jmi_gestionar_alumno = new javax.swing.JMenuItem();
         jm_empresas = new javax.swing.JMenu();
-        jmi_empresas = new javax.swing.JMenuItem();
         jmi_gestionar_tutor = new javax.swing.JMenuItem();
+        jmi_empresas = new javax.swing.JMenuItem();
         jm_ayuda = new javax.swing.JMenu();
         jmi_acerca = new javax.swing.JMenuItem();
 
@@ -164,14 +157,6 @@ public class Escritorio extends javax.swing.JFrame {
         jm_empresas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/empresa.png"))); // NOI18N
         jm_empresas.setText("EMPRESAS");
 
-        jmi_empresas.setText("Empresas");
-        jmi_empresas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmi_empresasActionPerformed(evt);
-            }
-        });
-        jm_empresas.add(jmi_empresas);
-
         jmi_gestionar_tutor.setText("Gestionar Tutor");
         jmi_gestionar_tutor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -179,6 +164,14 @@ public class Escritorio extends javax.swing.JFrame {
             }
         });
         jm_empresas.add(jmi_gestionar_tutor);
+
+        jmi_empresas.setText("Empresas");
+        jmi_empresas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_empresasActionPerformed(evt);
+            }
+        });
+        jm_empresas.add(jmi_empresas);
 
         jMenuBar1.add(jm_empresas);
 

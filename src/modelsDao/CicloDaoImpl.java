@@ -24,22 +24,26 @@ import models.Ciclo;
 public class CicloDaoImpl implements CicloDao {
 
     private Connection conn;
+    
+    //consultas para el modelo
+    private final String INSERT_CICLO = "INSERT INTO ciclos (id, nombre) VALUES (?,?)";
+    private final String GET_ALL_CICLOS = "SELECT * FROM ciclos";
+    private final String MAX_ID_CICLO = "SELECT MAX(id) FROM ciclos";
 
     public CicloDaoImpl(Connection conn) {
         this.conn = conn;
     }
 
-    String consulta = "";
-
     @Override
     public void insert(Ciclo a) {
         PreparedStatement ps = null;
         
-        Long newId = maxId();
+        //obtenemos el mayor id que hay en la tabla.
+        Long idCiclo = maxId();
 
         try {
-            ps = conn.prepareCall("INSERT INTO ciclos (id, nombre) VALUES (?,?)");
-            ps.setLong(1, newId+1);
+            ps = conn.prepareStatement(INSERT_CICLO);
+            ps.setLong(1, idCiclo+1);
             ps.setString(2, a.getNombre());
 
             ps.executeUpdate();
@@ -49,6 +53,8 @@ public class CicloDaoImpl implements CicloDao {
         } catch (SQLException ex) {
             Logger.getLogger(CicloDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
 
+            JOptionPane.showMessageDialog(null, "Error al insertar el ciclo.");
+            
         } finally {
             try {
                 ps.close();
@@ -77,7 +83,7 @@ public class CicloDaoImpl implements CicloDao {
 
         try {
             st = conn.createStatement();
-            rs = st.executeQuery("SELECT * FROM ciclos");
+            rs = st.executeQuery(GET_ALL_CICLOS);
 
             while (rs.next()) {
                 Ciclo ciclo = new Ciclo();
@@ -115,7 +121,7 @@ public class CicloDaoImpl implements CicloDao {
         
         try{
             st = conn.createStatement();
-            rs = st.executeQuery("SELECT MAX(id) FROM ciclos");
+            rs = st.executeQuery(MAX_ID_CICLO);
             
             while(rs.next()){
                 idMax = rs.getLong(1);

@@ -45,5 +45,10 @@ public class ProfesorDaoImpl implements ProfesorDao{
     public Profesor getOne(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public Long maxId() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

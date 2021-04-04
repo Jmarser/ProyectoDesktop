@@ -24,4 +24,5 @@ public interface DAO<T> {
 
     T getOne(int id);
 
+    Long maxId();
 }

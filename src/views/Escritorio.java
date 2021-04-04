@@ -32,7 +32,7 @@ public class Escritorio extends javax.swing.JFrame {
 
     /*obtenemos la conexión a la base de datos, con lo que nos aseguraremos al 
     cerrar el programa que cerramos la conexión con la base de datos.*/
-    //private Connection conn = ConMySQL.getConexion();
+    private Connection conn = ConMySQL.getConexion();
 
 
     public Escritorio() {
@@ -78,7 +78,7 @@ public class Escritorio extends javax.swing.JFrame {
             establecida, en el caso de no estar establecida la conexión, nos 
             saltamos la desconexión para evitar la excepción.*/
             //
-            /*
+            
             if (conn != null) {
                 try {
                     conn.close();
@@ -87,7 +87,7 @@ public class Escritorio extends javax.swing.JFrame {
                     Logger.getLogger(Escritorio.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            */
+            
             System.exit(0);
         }
     }

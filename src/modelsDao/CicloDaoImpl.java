@@ -34,10 +34,12 @@ public class CicloDaoImpl implements CicloDao {
     @Override
     public void insert(Ciclo a) {
         PreparedStatement ps = null;
+        
+        Long newId = maxId();
 
         try {
             ps = conn.prepareCall("INSERT INTO ciclos (id, nombre) VALUES (?,?)");
-            ps.setLong(1, 1L);
+            ps.setLong(1, newId+1);
             ps.setString(2, a.getNombre());
 
             ps.executeUpdate();
@@ -101,5 +103,34 @@ public class CicloDaoImpl implements CicloDao {
     @Override
     public Ciclo getOne(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Long maxId() {
+        
+        Long idMax = 0L;
+        
+        Statement st = null;
+        ResultSet rs = null;
+        
+        try{
+            st = conn.createStatement();
+            rs = st.executeQuery("SELECT MAX(id) FROM ciclos");
+            
+            while(rs.next()){
+                idMax = rs.getLong(1);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(CicloDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            try {
+                rs.close();
+                st.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(CicloDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return idMax;
     }
 }

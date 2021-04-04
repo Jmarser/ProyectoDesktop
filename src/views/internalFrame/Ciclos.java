@@ -67,6 +67,7 @@ public class Ciclos extends javax.swing.JInternalFrame {
             
             gestor.getCicloDao().insert(ciclo);
         }
+        limpiarCampo();
         mostrarCiclos();
     }
     
@@ -77,6 +78,11 @@ public class Ciclos extends javax.swing.JInternalFrame {
             return false;
         }
     }
+    
+    private void limpiarCampo(){
+        this.jtf_nuevoCiclo.setText("");
+    }
+    
     /*método con el que limpiamos la tabla*/
     private void limpiarTabla(){
         modelo_tabla.setRowCount(0);

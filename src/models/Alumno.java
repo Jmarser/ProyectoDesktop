@@ -14,17 +14,17 @@ public class Alumno extends Persona{
     private static final long serialVersionUID = 1L;
     
     private String ciclo;
-    private Profesor profesor;
-    private Tutor tutor;
+    private Long profesorID;
+    private Long tutorID;
 
     public Alumno() {
     }
 
-    public Alumno(String ciclo, Profesor profesor, Tutor tutor, Long id, String nombre, String primerApellido, String segundoApellido, String email, String password, boolean activo) {
+    public Alumno(String ciclo, Long profesorID, Long tutorID, Long id, String nombre, String primerApellido, String segundoApellido, String email, String password, boolean activo) {
         super(id, nombre, primerApellido, segundoApellido, email, password, activo);
         this.ciclo = ciclo;
-        this.profesor = profesor;
-        this.tutor = tutor;
+        this.profesorID = profesorID;
+        this.tutorID = tutorID;
     }
  
     public String getCiclo() {
@@ -35,20 +35,20 @@ public class Alumno extends Persona{
         this.ciclo = ciclo;
     }
 
-    public Profesor getProfesor() {
-        return profesor;
+    public Long getProfesorID() {
+        return profesorID;
     }
 
-    public void setProfesor(Profesor profesor) {
-        this.profesor = profesor;
+    public void setProfesorID(Long profesorID) {
+        this.profesorID = profesorID;
     }
 
-    public Tutor getTutor() {
-        return tutor;
+    public Long getTutorID() {
+        return tutorID;
     }
 
-    public void setTutor(Tutor tutor) {
-        this.tutor = tutor;
+    public void setTutorID(Long tutorID) {
+        this.tutorID = tutorID;
     }
 
     @Override

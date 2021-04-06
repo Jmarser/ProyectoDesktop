@@ -25,7 +25,9 @@ public class AlumnoDaoImpl implements AlumnoDao {
 
     private Connection conn;
 
-    private String consulta = "";
+    private final String ADD_ALUMNO = "INSERT INTO alumnos (id, email, nombre, primer_apellido, segundo_apellido ,profesor_id, tutor_id) VALUES (?,?,?,?,?,?,?)";
+    private final String GET_ALL_ALUMNOS = "SELECT * FROM alumnos";
+    private final String MAX_ID_ALUMNOS = "SELECT MAX(id) FROM alumnos";
 
     public AlumnoDaoImpl(Connection conn) {
         this.conn = conn;
@@ -35,18 +37,20 @@ public class AlumnoDaoImpl implements AlumnoDao {
     public void insert(Alumno a) {
         PreparedStatement ps = null;
 
-        try {
-            ps = conn.prepareCall(consulta);
+        //obtenemos el id mayor de la tabla alumnos
+        Long idAlumno = maxId();
 
-            ps.setString(1, a.getNombre());
-            ps.setString(2, a.getPrimerApellido());
-            ps.setString(3, a.getSegundoApellido());
-            ps.setString(4, a.getEmail());
-            ps.setString(5, a.getPassword());
-            ps.setBoolean(6, a.isActivo());
-            ps.setString(7, a.getCiclo());
-            ps.setLong(8, a.getProfesor().getId());
-            ps.setLong(9, a.getTutor().getId());
+        try {
+            ps = conn.prepareCall(ADD_ALUMNO);
+
+            ps.setLong(1, idAlumno + 1);
+            ps.setString(2, a.getEmail());
+            ps.setString(3, a.getNombre());
+            ps.setString(4, a.getPrimerApellido());
+            ps.setString(5, a.getSegundoApellido());
+            //ps.setString(6, a.getCiclo());
+            ps.setLong(6, a.getProfesorID());
+            ps.setLong(7, a.getTutorID());
 
             ps.executeUpdate();
 
@@ -67,7 +71,7 @@ public class AlumnoDaoImpl implements AlumnoDao {
         PreparedStatement ps = null;
 
         try {
-            ps = conn.prepareCall(consulta);
+            ps = conn.prepareCall("");
             ps.executeUpdate();
 
         } catch (SQLException ex) {
@@ -86,7 +90,7 @@ public class AlumnoDaoImpl implements AlumnoDao {
         PreparedStatement ps = null;
 
         try {
-            ps = conn.prepareCall(consulta);
+            ps = conn.prepareCall("");
             ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -108,17 +112,18 @@ public class AlumnoDaoImpl implements AlumnoDao {
 
         try {
             st = conn.createStatement();
-            rs = st.executeQuery(consulta);
+            rs = st.executeQuery(GET_ALL_ALUMNOS);
 
             while (rs.next()) {
                 Alumno al = new Alumno();
                 al.setId(rs.getLong(1));
-                al.setNombre(rs.getString(2));
-                al.setPrimerApellido(rs.getString(3));
-                al.setSegundoApellido(rs.getString(4));
-                al.setEmail(rs.getString(5));
-                al.setActivo(rs.getBoolean(6));
-                
+                al.setEmail(rs.getString(3));
+                al.setNombre(rs.getString(4));
+                al.setPrimerApellido(rs.getString(5));
+                al.setSegundoApellido(rs.getString(6));
+                al.setProfesorID(rs.getLong(7));
+                al.setTutorID(rs.getLong(8));
+
                 listado.add(al);
             }
         } catch (SQLException ex) {
@@ -142,7 +147,31 @@ public class AlumnoDaoImpl implements AlumnoDao {
 
     @Override
     public Long maxId() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Long idMax = 0L;
+
+        Statement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.createStatement();
+            rs = st.executeQuery(MAX_ID_ALUMNOS);
+
+            while (rs.next()) {
+                idMax = rs.getLong(1);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                rs.close();
+                st.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return idMax;
     }
 
 }

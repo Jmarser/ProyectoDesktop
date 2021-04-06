@@ -36,6 +36,7 @@ public class Empresas extends javax.swing.JInternalFrame {
     private void initVentana() {
         this.setTitle("GESTIÓN DE EMPRESAS");
         initTabla();
+        mostrarEmpresas();
     }
 
     private void initTabla() {

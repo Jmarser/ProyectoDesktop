@@ -16,15 +16,16 @@ public class Constantes {
     /* ----- Constantes para la conexión con la base de datos ----- */
     public static final String DRIVER_MYSQL = "com.mysql.cj.jdbc.Driver";
     public static final String BASE_DATOS = "proyecto_api";
-    public static final String URL_MYSQL = "jdbc:mysql://localhost:3306/"+ BASE_DATOS +"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    //"jdbc:mysql://localhost:3306/" + BASE_DATOS + "?useTimezone=true&serverTimeZone=UTC";
+    public static final String URL_MYSQL = "jdbc:mysql://localhost:3306/" + BASE_DATOS + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     public static final String USER_MYSQL = "root";
     public static final String PASS_MYSQL = "1234";
 
     /* ----- Patrones de verificación ----- */
- /* ----- ----- */
+    /* ----- expresion regular para validar correos ----- */
+    public static final String PATTERN_CORREO = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
- /* ----- constantes para la generación de las claves ----- */
+
+    /* ----- constantes para la generación de las claves ----- */
     //conjunto de caracteres para la generación de las claves.
     public static final String MAYUSCULAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public static final String MINUSCULAS = "abcdefghijklmnopqrstuvwxyz";
@@ -51,4 +52,9 @@ public class Constantes {
     public static final String BAJO = "Bajo";
     public static final String MEDIO = "Medio";
     public static final String ALTO = "Alto";
+    
+    /*---- Roles usados en la aplicacion ----*/
+    public static final String PROFESOR = "Profesor";
+    public static final String TUTOR = "Tutor";
+    public static final String ALUMNO = "Alumno";
 }

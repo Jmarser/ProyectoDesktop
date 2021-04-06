@@ -6,18 +6,26 @@
 package views.internalFrame;
 
 import java.awt.event.ItemEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import models.Login;
+import models.Profesor;
+import modelsDao.ManagerDaoImpl;
 import utils.Constantes;
 import utils.Generador;
+import utils.Utilidades;
 
 /**
  *
  * @author JMARSER
  */
 public class GestionProfesores extends javax.swing.JInternalFrame {
-
-    public static String x;
+    
     private static final long serialVersionUID = 1L;
+    public static String x;
+    private final ManagerDaoImpl gestor = new ManagerDaoImpl();
+    private List<Profesor> listado = new ArrayList<>();
 
     public GestionProfesores() {
         initComponents();
@@ -54,8 +62,18 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
     }
 
     private void llenarProfesores() {
+        
+        this.jcb_profesores.removeAllItems();
+        
+        listado = gestor.getProfesorDao().getAll();
+        
         this.jcb_profesores.addItem("Seleccione un profesor para editar.");
-        this.jcb_profesores.addItem("Juan Márquez Serrano");
+        if(listado != null){
+            for(int i = 0; i<listado.size(); i++){
+                this.jcb_profesores.addItem(listado.get(i).toString());
+            }
+        }
+        
     }
 
     private void limpiarCampos() {
@@ -90,6 +108,56 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         } else {
             this.jtf_longitud.setText("");
         }
+    }
+    
+    private void rellenarCampos(){
+        int posicion = this.jcb_profesores.getSelectedIndex()-1;
+        this.jtf_nombre.setText(listado.get(posicion).getNombre());
+        this.jtf_primerApellido.setText(listado.get(posicion).getPrimerApellido());
+        this.jtf_segundoApellido.setText(listado.get(posicion).getSegundoApellido());
+        this.jtf_email.setText(listado.get(posicion).getEmail());
+        Login login = gestor.getLoginDao().getLoginByEmail(this.jtf_email.getText());
+        this.jpf_password.setText(login.getPassword());
+        this.jcb_activo.setSelected(login.isActivo());
+    }
+    
+    private boolean validarCampos(){
+        boolean valido = false;
+        
+        if(!this.jtf_nombre.getText().isEmpty()){
+            if(!this.jtf_primerApellido.getText().isEmpty()){
+                if(!this.jtf_segundoApellido.getText().isEmpty()){
+                    if(!this.jtf_email.getText().isEmpty()){
+                        if(Utilidades.validarCorreo(this.jtf_email.getText())){
+                            if(jcb_activo.isSelected()){
+                                valido = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return valido;
+    }
+    
+    private void guardarProfesor(){
+        Profesor profe = new Profesor();
+        Login login = new Login();
+        
+        String email = this.jtf_email.getText().trim();
+        
+        profe.setNombre(this.jtf_nombre.getText());
+        profe.setPrimerApellido(this.jtf_primerApellido.getText());
+        profe.setSegundoApellido(this.jtf_segundoApellido.getText());
+        profe.setEmail(email);
+        
+        login.setEmail(email);
+        login.setPassword(String.valueOf(this.jpf_password.getPassword()));
+        login.setRol(Constantes.PROFESOR);
+        login.setActivo(this.jcb_activo.isSelected());
+        
+        gestor.getProfesorDao().insert(profe);
+        gestor.getLoginDao().insert(login);
     }
 
     /**
@@ -176,10 +244,20 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         btn_nuevo.setText("NUEVO");
+        btn_nuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_nuevoActionPerformed(evt);
+            }
+        });
 
         btn_modificar.setText("MODIFICAR");
 
         btn_guardar.setText("GUARDAR");
+        btn_guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_guardarActionPerformed(evt);
+            }
+        });
 
         btn_limpiar.setText("LIMPIAR");
         btn_limpiar.addActionListener(new java.awt.event.ActionListener() {
@@ -409,6 +487,9 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
     private void jcb_profesoresItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcb_profesoresItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             initBotones();
+            if(this.jcb_profesores.getSelectedIndex() != 0){
+                rellenarCampos();
+            }
         }
     }//GEN-LAST:event_jcb_profesoresItemStateChanged
 
@@ -421,6 +502,20 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_btn_cerrarActionPerformed
+
+    private void btn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardarActionPerformed
+        if(validarCampos()){
+            guardarProfesor();
+            limpiarCampos();
+            llenarProfesores();
+        }
+    }//GEN-LAST:event_btn_guardarActionPerformed
+
+    private void btn_nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevoActionPerformed
+        // TODO add your handling code here:
+        limpiarCampos();
+        initBotones();
+    }//GEN-LAST:event_btn_nuevoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -6,9 +6,18 @@
 package views.internalFrame;
 
 import java.awt.event.ItemEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import models.Alumno;
+import models.Ciclo;
+import models.Login;
+import models.Profesor;
+import models.Tutor;
+import modelsDao.ManagerDaoImpl;
 import utils.Constantes;
 import utils.Generador;
+import utils.Utilidades;
 
 /**
  *
@@ -16,23 +25,29 @@ import utils.Generador;
  */
 public class GestionAlumnos extends javax.swing.JInternalFrame {
 
-    public static String x;
     private static final long serialVersionUID = 1L;
+    public static String x;
+
+    private ManagerDaoImpl gestor = new ManagerDaoImpl();
+    private List<Alumno> alumnos = new ArrayList<>();
+    private List<Profesor> profesores = new ArrayList<>();
+    private List<Tutor> tutores = new ArrayList<>();
+    private List<Ciclo> ciclos = new ArrayList<>();
 
     public GestionAlumnos() {
         initComponents();
         this.x = "x";
         initVentana();
-        llenarNiveles();
-        llenarAlumnos();
-        llenarCiclos();
-        llenarProfesores();
-        llenarTutores();
         initBotones();
     }
 
     private void initVentana() {
         this.setTitle("GESTIÓN DE ALUMNOS");
+        llenarNiveles();
+        llenarAlumnos();
+        llenarCiclos();
+        llenarProfesores();
+        llenarTutores();
     }
 
     private void initBotones() {
@@ -57,23 +72,57 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
     }
 
     private void llenarAlumnos() {
+        this.jcb_alumnos.removeAllItems();
+
+        alumnos = gestor.getAlumnoDao().getAll();
+
         this.jcb_alumnos.addItem("Seleccione un alumno para editar");
-        this.jcb_alumnos.addItem("Dolores cabrera");
+        if (alumnos != null) {
+            for (int i = 0; i < alumnos.size(); i++) {
+                this.jcb_alumnos.addItem(alumnos.get(i).toString());
+            }
+        }
     }
 
     private void llenarCiclos() {
-        this.jcb_ciclos.addItem("DAM");
-        this.jcb_ciclos.addItem("DAW");
+        this.jcb_ciclos.removeAllItems();
+
+        ciclos = gestor.getCicloDao().getAll();
+
+        this.jcb_ciclos.addItem("Seleccione el ciclo del alumno...");
+
+        if (ciclos != null) {
+            for (int i = 0; i < ciclos.size(); i++) {
+                this.jcb_ciclos.addItem(ciclos.get(i).getNombre());
+            }
+        }
+
     }
 
     private void llenarTutores() {
+        this.jcb_tutores.removeAllItems();
+        
+        tutores = gestor.getTutorDao().getAll();
+        
         this.jcb_tutores.addItem("Seleccione un tutor para editar");
-        this.jcb_tutores.addItem("Lourdes arrabal");
+        if(tutores != null){
+            for(int i = 0; i<tutores.size(); i++){
+                this.jcb_tutores.addItem(tutores.get(i).toString());
+            }
+        }
     }
 
     private void llenarProfesores() {
+        this.jcb_profesores.removeAllItems();
+        
+        profesores = gestor.getProfesorDao().getAll();
+        
         this.jcb_profesores.addItem("Seleccione un profesor para editar.");
-        this.jcb_profesores.addItem("Juan Márquez Serrano");
+        if(profesores != null){
+            for(int i = 0; i<profesores.size(); i++){
+                this.jcb_profesores.addItem(profesores.get(i).toString());
+            }
+        }
     }
 
     private void longitudMinima() {
@@ -110,6 +159,95 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         this.jtf_email.setText("");
         this.jpf_password.setText("");
         this.checkBox_activo.setSelected(false);
+    }
+    
+    private void rellenarCampos(){
+        int posicion = this.jcb_alumnos.getSelectedIndex()-1;
+        this.jtf_nombre.setText(alumnos.get(posicion).getNombre());
+        this.jtf_primerApellido.setText(alumnos.get(posicion).getPrimerApellido());
+        this.jtf_segundoApellido.setText(alumnos.get(posicion).getSegundoApellido());
+        this.jtf_email.setText(alumnos.get(posicion).getEmail());
+        
+        Login login = gestor.getLoginDao().getLoginByEmail(alumnos.get(posicion).getEmail());
+        this.jpf_password.setText(login.getPassword());
+        this.checkBox_activo.setSelected(login.isActivo());
+        
+        for(int i = 0; i<profesores.size(); i++){
+            if(profesores.get(i).getId() == alumnos.get(posicion).getProfesorID()){
+                this.jcb_profesores.setSelectedIndex(i + 1);
+            }
+        }
+        
+        for(int i = 0; i<tutores.size(); i++){
+            if(tutores.get(i).getId() == alumnos.get(posicion).getTutorID()){
+                this.jcb_tutores.setSelectedIndex(i + 1);
+            }
+        }
+        
+        for(int i = 0; i<ciclos.size(); i++){
+            if(ciclos.get(i).getNombre().equals(alumnos.get(posicion).getCiclo())){
+                this.jcb_ciclos.setSelectedIndex(i + 1);
+            }
+        }
+    }
+    
+    private boolean validarCampos(){
+        boolean valido = false;
+        
+        if(!this.jtf_nombre.getText().isEmpty()){
+            if(!this.jtf_primerApellido.getText().isEmpty()){
+                if(!this.jtf_segundoApellido.getText().isEmpty()){
+                    if(!this.jtf_email.getText().isEmpty()){
+                        if(Utilidades.validarCorreo(this.jtf_email.getText().trim())){
+                            if(this.jpf_password.getPassword().length != 0){
+                                if(this.jcb_ciclos.getSelectedIndex() != 0){
+                                    if(this.jcb_profesores.getSelectedIndex() != 0){
+                                        if(this.jcb_tutores.getSelectedIndex() != 0){
+                                            if(this.checkBox_activo.isSelected()){
+                                                valido = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return valido;
+    }
+    
+    private void guardarAlumno(){
+        Alumno alumno = new Alumno();
+        Login login = new Login();
+        
+        String email = this.jtf_email.getText().trim();
+        Long idProfesor;
+        Long idTutor;
+        
+        idProfesor = profesores.get(this.jcb_profesores.getSelectedIndex()-1).getId();
+        idTutor = tutores.get(this.jcb_tutores.getSelectedIndex()-1).getId();
+        
+        
+        
+        alumno.setNombre(this.jtf_nombre.getText());
+        alumno.setPrimerApellido(this.jtf_primerApellido.getText());
+        alumno.setSegundoApellido(this.jtf_segundoApellido.getText());
+        alumno.setEmail(email);
+        //alumno.setCiclo(this.jcb_ciclos.getSelectedItem().toString());
+        alumno.setProfesorID(idProfesor);
+        alumno.setTutorID(idTutor);
+        
+        login.setEmail(email);
+        login.setPassword(String.valueOf(this.jpf_password.getPassword()));
+        login.setActivo(this.checkBox_activo.isSelected());
+        login.setRol(Constantes.ALUMNO);
+        
+        
+        gestor.getLoginDao().insert(login);
+        gestor.getAlumnoDao().insert(alumno);
     }
 
     /**
@@ -203,10 +341,20 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         btn_nuevo.setText("NUEVO");
+        btn_nuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_nuevoActionPerformed(evt);
+            }
+        });
 
         btn_modificar.setText("MODIFICAR");
 
         btn_guardar.setText("GUARDAR");
+        btn_guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_guardarActionPerformed(evt);
+            }
+        });
 
         btn_limpiar.setText("LIMPIAR");
         btn_limpiar.addActionListener(new java.awt.event.ActionListener() {
@@ -484,6 +632,9 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
     private void jcb_alumnosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcb_alumnosItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             initBotones();
+            if(this.jcb_alumnos.getSelectedIndex() != 0){
+                rellenarCampos();
+            }
         }
     }//GEN-LAST:event_jcb_alumnosItemStateChanged
 
@@ -509,6 +660,20 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_btn_cerrarActionPerformed
+
+    private void btn_nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevoActionPerformed
+        // TODO add your handling code here:
+        limpiarCampos();
+    }//GEN-LAST:event_btn_nuevoActionPerformed
+
+    private void btn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardarActionPerformed
+        // TODO add your handling code here:
+        if(validarCampos()){
+            guardarAlumno();
+            limpiarCampos();
+            llenarAlumnos();
+        }
+    }//GEN-LAST:event_btn_guardarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

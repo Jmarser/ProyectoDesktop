@@ -15,15 +15,37 @@ public class Login implements Serializable{
 
     private static final long serialVersionUID = 1L;
     
+    private Long id;
+    private boolean activo;
     private String email;
     private String password;
+    private String rol;
 
     public Login() {
     }
 
-    public Login(String email, String password) {
+    public Login(Long id, boolean activo, String email, String password, String rol) {
+        this.id = id;
+        this.activo = activo;
         this.email = email;
         this.password = password;
+        this.rol = rol;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
     public String getEmail() {
@@ -41,6 +63,12 @@ public class Login implements Serializable{
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
 }

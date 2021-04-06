@@ -6,9 +6,16 @@
 package views.internalFrame;
 
 import java.awt.event.ItemEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import models.Empresa;
+import models.Login;
+import models.Tutor;
+import modelsDao.ManagerDaoImpl;
 import utils.Constantes;
 import utils.Generador;
+import utils.Utilidades;
 
 /**
  *
@@ -16,30 +23,35 @@ import utils.Generador;
  */
 public class GestionTutores extends javax.swing.JInternalFrame {
 
-    public static String x;
     private static final long serialVersionUID = 1L;
-    
+    public static String x;
+
+    private ManagerDaoImpl gestor = new ManagerDaoImpl();
+    private List<Tutor> tutores = new ArrayList<>();
+    private List<Empresa> empresas = new ArrayList<>();
+
     public GestionTutores() {
         initComponents();
         this.x = "x";
         initVentana();
         initBotones();
+    }
+
+    private void initVentana() {
+        this.setTitle("GESTIÓN DE TUTORES");
+
         llenarNiveles();
         llenarTutores();
         llenarEmpresas();
     }
-    
-    private void initVentana(){
-        this.setTitle("GESTIÓN DE TUTORES");
-    }
-    
-    private void initBotones(){
-        if(this.jcb_tutores.getSelectedIndex() != 0){
+
+    private void initBotones() {
+        if (this.jcb_tutores.getSelectedIndex() != 0) {
             this.btn_modificar.setEnabled(true);
             this.btn_guardar.setEnabled(false);
             this.btn_generar.setEnabled(false);
             this.jpf_password.setEditable(false);
-        }else{
+        } else {
             //limpiarCampos();
             this.btn_modificar.setEnabled(false);
             this.btn_guardar.setEnabled(true);
@@ -47,27 +59,43 @@ public class GestionTutores extends javax.swing.JInternalFrame {
             this.jpf_password.setEditable(true);
         }
     }
-    
-    private void llenarNiveles(){    
-        for(String nivel: Constantes.NIVELES){
+
+    private void llenarNiveles() {
+        for (String nivel : Constantes.NIVELES) {
             this.jcb_nivelSeguridad.addItem(nivel);
         }
     }
-    
-    private void llenarTutores(){
+
+    private void llenarTutores() {
+        this.jcb_tutores.removeAllItems();
+
+        tutores = gestor.getTutorDao().getAll();
+
         this.jcb_tutores.addItem("Seleccione un tutor para editar");
-        this.jcb_tutores.addItem("Lourdes arrabal");
+        if (tutores != null) {
+            for (int i = 0; i < tutores.size(); i++) {
+                this.jcb_tutores.addItem(tutores.get(i).toString());
+            }
+        }
     }
-    
-    private void llenarEmpresas(){
-        this.jcb_empresas.addItem("Edyca");
-        this.jcb_empresas.addItem("Bodegas Rio Tinto");
+
+    private void llenarEmpresas() {
+        this.jcb_empresas.removeAllItems();
+
+        this.jcb_empresas.addItem("Seleccione una empresa");
+        empresas = gestor.getEmpresaDao().getAll();
+
+        if (empresas != null) {
+            for (int i = 0; i < empresas.size(); i++) {
+                this.jcb_empresas.addItem(empresas.get(i).getNombre());
+            }
+        }
     }
-    
-    private void limpiarCampos(){
+
+    private void limpiarCampos() {
         this.jcb_tutores.setSelectedIndex(0);
         this.jcb_nivelSeguridad.setSelectedIndex(0);
-        this.jcb_empresas.setSelectedIndex(0);
+        this.jcb_empresas.setSelectedIndex(-1);
         this.jtf_nombre.setText("");
         this.jtf_primerApellido.setText("");
         this.jtf_segundoApellido.setText("");
@@ -76,11 +104,11 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         this.jpf_password.setText("");
         this.checkBox_activo.setSelected(false);
     }
-    
-    private void longitudMinima(){
-        if(this.jcb_nivelSeguridad.getSelectedIndex() != 0){
+
+    private void longitudMinima() {
+        if (this.jcb_nivelSeguridad.getSelectedIndex() != 0) {
             String nivel = this.jcb_nivelSeguridad.getSelectedItem().toString();
-            switch(nivel){
+            switch (nivel) {
                 case Constantes.BAJO:
                     this.jtf_longitud.setText(String.valueOf(Constantes.LONG_LOW));
                     break;
@@ -94,9 +122,69 @@ public class GestionTutores extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(null, "Indique un nivel de seguridad válido.");
                     break;
             }
-        }else{
+        } else {
             this.jtf_longitud.setText("");
         }
+    }
+
+    private void rellenarCampos() {
+        int posicion = this.jcb_tutores.getSelectedIndex() - 1;
+        this.jtf_nombre.setText(tutores.get(posicion).getNombre());
+        this.jtf_primerApellido.setText(tutores.get(posicion).getPrimerApellido());
+        this.jtf_segundoApellido.setText(tutores.get(posicion).getSegundoApellido());
+        this.jtf_email.setText(tutores.get(posicion).getEmail());
+
+        Login login = gestor.getLoginDao().getLoginByEmail(this.jtf_email.getText().trim());
+        this.jpf_password.setText(login.getPassword());
+        this.checkBox_activo.setSelected(login.isActivo());
+
+        for (int i = 0; i < empresas.size(); i++) {
+            if (empresas.get(i).getNombre().equalsIgnoreCase(tutores.get(posicion).getEmpresa())) {
+                this.jcb_empresas.setSelectedIndex(i + 1);
+            }
+        }
+    }
+
+    private boolean validarCampos() {
+        boolean valido = false;
+
+        if (!this.jtf_nombre.getText().isEmpty()) {
+            if (!this.jtf_primerApellido.getText().isEmpty()) {
+                if (!this.jtf_segundoApellido.getText().isEmpty()) {
+                    if (!this.jtf_email.getText().isEmpty()) {
+                        if (this.jcb_empresas.getSelectedIndex() != 0) {
+                            if (Utilidades.validarCorreo(this.jtf_email.getText())) {
+                                if (this.checkBox_activo.isSelected()) {
+                                    valido = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return valido;
+    }
+    
+    private void guardarTutor(){
+        Tutor tutor = new Tutor();
+        Login login = new Login();
+        
+        String email = this.jtf_email.getText().trim();
+        
+        tutor.setNombre(this.jtf_nombre.getText());
+        tutor.setPrimerApellido(this.jtf_primerApellido.getText());
+        tutor.setSegundoApellido(this.jtf_segundoApellido.getText());
+        tutor.setEmail(email);
+        tutor.setEmpresa(this.jcb_empresas.getSelectedItem().toString());
+        
+        login.setEmail(email);
+        login.setPassword(String.valueOf(this.jpf_password.getPassword()));
+        login.setActivo(this.checkBox_activo.isSelected());
+        login.setRol(Constantes.TUTOR);
+        
+        gestor.getLoginDao().insert(login);
+        gestor.getTutorDao().insert(tutor);
     }
 
     /**
@@ -189,6 +277,11 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         btn_modificar.setText("MODIFICAR");
 
         btn_guardar.setText("GUARDAR");
+        btn_guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_guardarActionPerformed(evt);
+            }
+        });
 
         btn_limpiar.setText("LIMPIAR");
         btn_limpiar.addActionListener(new java.awt.event.ActionListener() {
@@ -407,28 +500,33 @@ public class GestionTutores extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameClosing
 
     private void jcb_nivelSeguridadItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcb_nivelSeguridadItemStateChanged
-        if(evt.getStateChange() == ItemEvent.SELECTED){
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
             longitudMinima();
         }
     }//GEN-LAST:event_jcb_nivelSeguridadItemStateChanged
 
     private void btn_generarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_generarActionPerformed
-        if(this.jcb_nivelSeguridad.getSelectedIndex() != 0){
-            if(!this.jtf_longitud.getText().equals("")){
+        if (this.jcb_nivelSeguridad.getSelectedIndex() != 0) {
+            if (!this.jtf_longitud.getText().equals("")) {
                 this.jpf_password.setText(new Generador().getClave(
                         this.jcb_nivelSeguridad.getSelectedItem().toString(),
                         Integer.parseInt(this.jtf_longitud.getText())));
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Indique una longitud válida.");
             }
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Indique un nivel de seguridad válido.");
         }
     }//GEN-LAST:event_btn_generarActionPerformed
 
     private void jcb_tutoresItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcb_tutoresItemStateChanged
-        if(evt.getStateChange() == ItemEvent.SELECTED){
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
             initBotones();
+            if (this.jcb_tutores.getSelectedIndex() != 0) {
+                rellenarCampos();
+            } else {
+                limpiarCampos();
+            }
         }
     }//GEN-LAST:event_jcb_tutoresItemStateChanged
 
@@ -440,6 +538,17 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_btn_cerrarActionPerformed
+
+    private void btn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardarActionPerformed
+        // TODO add your handling code here:
+        if(validarCampos()){
+            guardarTutor();
+            limpiarCampos();
+            llenarTutores();
+        }else{
+            JOptionPane.showMessageDialog(null, "Error al guardar el tutor");
+        }
+    }//GEN-LAST:event_btn_guardarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

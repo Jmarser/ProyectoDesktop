@@ -51,12 +51,8 @@ public class CicloDaoImpl implements CicloDao {
                 insertado = true;
             }
 
-            JOptionPane.showMessageDialog(null, "Ciclo insertado correctamente.");
-
         } catch (SQLException ex) {
             Logger.getLogger(CicloDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
-
-            JOptionPane.showMessageDialog(null, "Error al insertar el ciclo.");
 
         } finally {
             try {

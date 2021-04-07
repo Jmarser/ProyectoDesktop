@@ -65,8 +65,13 @@ public class Empresas extends javax.swing.JInternalFrame {
         if (validarCampos()) {
             Empresa emp = new Empresa();
             emp.setNombre(this.jtf_nuevaEmpresa.getText());
+
+            if (gestor.getEmpresaDao().insert(emp)) {
+                JOptionPane.showMessageDialog(null, "Empresa insertada correctamente.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al guardar la empresa.");
+            }
             
-            gestor.getEmpresaDao().insert(emp);
         } else {
             JOptionPane.showMessageDialog(null, "Ingrese un nombre para la empresa.");
         }
@@ -90,6 +95,7 @@ public class Empresas extends javax.swing.JInternalFrame {
             return false;
         }
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.

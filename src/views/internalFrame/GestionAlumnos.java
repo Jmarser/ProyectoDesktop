@@ -536,6 +536,16 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel9.setText("Ciclo:");
 
+        jcb_ciclos.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                jcb_ciclosPopupMenuWillBecomeVisible(evt);
+            }
+        });
+
         mostrar_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/pass-visible.png"))); // NOI18N
         mostrar_pass.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -632,6 +642,25 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel8.setText("Tutor:");
 
+        jcb_profesores.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                jcb_profesoresPopupMenuWillBecomeVisible(evt);
+            }
+        });
+
+        jcb_tutores.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                jcb_tutoresPopupMenuWillBecomeVisible(evt);
+            }
+        });
         jcb_tutores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jcb_tutoresActionPerformed(evt);
@@ -776,6 +805,21 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
             llenarAlumnos();
         }
     }//GEN-LAST:event_btn_modificarActionPerformed
+
+    private void jcb_ciclosPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jcb_ciclosPopupMenuWillBecomeVisible
+        // TODO add your handling code here:
+        llenarCiclos();
+    }//GEN-LAST:event_jcb_ciclosPopupMenuWillBecomeVisible
+
+    private void jcb_profesoresPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jcb_profesoresPopupMenuWillBecomeVisible
+        // TODO add your handling code here:
+        llenarProfesores();
+    }//GEN-LAST:event_jcb_profesoresPopupMenuWillBecomeVisible
+
+    private void jcb_tutoresPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jcb_tutoresPopupMenuWillBecomeVisible
+        // TODO add your handling code here:
+        llenarTutores();
+    }//GEN-LAST:event_jcb_tutoresPopupMenuWillBecomeVisible
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

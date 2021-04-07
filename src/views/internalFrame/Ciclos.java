@@ -59,6 +59,7 @@ public class Ciclos extends javax.swing.JInternalFrame {
                 modelo_tabla.addRow(linea);
             }
         }
+
     }
 
     private void addCiclo() {
@@ -66,7 +67,12 @@ public class Ciclos extends javax.swing.JInternalFrame {
             Ciclo ciclo = new Ciclo();
             ciclo.setNombre(this.jtf_nuevoCiclo.getText());
 
-            gestor.getCicloDao().insert(ciclo);
+            if(gestor.getCicloDao().insert(ciclo)){
+                JOptionPane.showMessageDialog(null, "Ciclo guardado correctamente.");
+            }else{
+                JOptionPane.showMessageDialog(null, "Error al guardar el ciclo.");
+            }
+            
         } else {
             JOptionPane.showMessageDialog(null, "Ingrese un nombre para el ciclo.");
         }

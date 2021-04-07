@@ -453,6 +453,16 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel7.setText("Empresa:");
 
+        jcb_empresas.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                jcb_empresasPopupMenuWillBecomeVisible(evt);
+            }
+        });
+
         mostrar_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/pass-visible.png"))); // NOI18N
         mostrar_pass.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -639,6 +649,11 @@ public class GestionTutores extends javax.swing.JInternalFrame {
             llenarTutores();
         }
     }//GEN-LAST:event_btn_modificarActionPerformed
+
+    private void jcb_empresasPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jcb_empresasPopupMenuWillBecomeVisible
+        // TODO add your handling code here:
+        llenarEmpresas();
+    }//GEN-LAST:event_jcb_empresasPopupMenuWillBecomeVisible
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

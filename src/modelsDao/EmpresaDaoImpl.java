@@ -51,8 +51,6 @@ public class EmpresaDaoImpl implements EmpresaDao {
                 insertado = true;
             }
 
-            JOptionPane.showMessageDialog(null, "Empresa insertada correctamente.");
-
         } catch (SQLException ex) {
             Logger.getLogger(EmpresaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

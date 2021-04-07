@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import models.Tutor;
 
 /**
@@ -23,19 +22,21 @@ import models.Tutor;
  */
 public class TutorDaoImpl implements TutorDao {
 
-    private Connection conn;
+    private final Connection conn;
 
-    //consultas para los tutores
-    private static String ADD_TUTOR = "INSERT INTO tutores (id, nombre, primer_apellido, segundo_apellido, email, empresa) VALUES (?,?,?,?,?,?)";
-    private static String GET_ALL_TUTORES = "SELECT * FROM tutores";
-    private static String MAX_ID_TUTORES = "SELECT MAX(id) FROM tutores";
+    //consultas para la tabla tutores
+    private static final String ADD_TUTOR = "INSERT INTO tutores (id, nombre, primer_apellido, segundo_apellido, email, empresa) VALUES (?,?,?,?,?,?)";
+    private static final String GET_ALL_TUTORES = "SELECT * FROM tutores";
+    private static final String MAX_ID_TUTORES = "SELECT MAX(id) FROM tutores";
+    private static final String UPDATE_TUTOR = "UPDATE tutores SET email=?, nombre=?, primer_apellido=?, segundo_apellido=?, empresa=? WHERE id=?";
 
     public TutorDaoImpl(Connection conn) {
         this.conn = conn;
     }
 
     @Override
-    public void insert(Tutor a) {
+    public boolean insert(Tutor a) {
+        boolean insertado = false;
         PreparedStatement ps = null;
 
         //obtenemos el mayor id de la tabla de tutores
@@ -50,24 +51,54 @@ public class TutorDaoImpl implements TutorDao {
             ps.setString(5, a.getEmail());
             ps.setString(6, a.getEmpresa());
 
-            ps.executeUpdate();
+            if (ps.executeUpdate() > 0) {
+                insertado = true;
+            }
 
-            JOptionPane.showMessageDialog(null, "Tutor insertado correctamente.");
-            
         } catch (SQLException ex) {
             Logger.getLogger(TutorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                ps.close();
+                if (ps != null) {
+                    ps.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(TutorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return insertado;
     }
 
     @Override
-    public void update(Tutor a) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean update(Tutor a) {
+        boolean editado = false;
+        PreparedStatement ps = null;
+
+        try {
+            ps = conn.prepareStatement(UPDATE_TUTOR);
+            ps.setString(1, a.getEmail());
+            ps.setString(2, a.getNombre());
+            ps.setString(3, a.getPrimerApellido());
+            ps.setString(4, a.getSegundoApellido());
+            ps.setString(5, a.getEmpresa());
+            ps.setLong(6, a.getId());
+
+            if (ps.executeUpdate() > 0) {
+                editado = true;
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(TutorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(TutorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return editado;
     }
 
     @Override
@@ -102,8 +133,12 @@ public class TutorDaoImpl implements TutorDao {
             Logger.getLogger(TutorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                rs.close();
-                st.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(TutorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -136,8 +171,12 @@ public class TutorDaoImpl implements TutorDao {
             Logger.getLogger(TutorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                rs.close();
-                st.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(TutorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }

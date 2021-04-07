@@ -21,11 +21,11 @@ import models.Empresa;
  *
  * @author Jmarser
  */
-public class EmpresaDaoImpl implements EmpresaDao{
-    
-    private Connection conn;
-    
-    //consultas para el modelo
+public class EmpresaDaoImpl implements EmpresaDao {
+
+    private final Connection conn;
+
+    //consultas para la tabla empresas
     private final String INSERT_EMPRESA = "INSERT INTO empresas (id, nombre) VALUES (?,?)";
     private final String GET_ALL_EMPRESAS = "SELECT * FROM empresas";
     private final String MAX_ID_EMPRESAS = "SELECT MAX(id) FROM empresas";
@@ -35,34 +35,40 @@ public class EmpresaDaoImpl implements EmpresaDao{
     }
 
     @Override
-    public void insert(Empresa a) {
+    public boolean insert(Empresa a) {
+        boolean insertado = false;
         PreparedStatement ps = null;
-        
+
         //obtenemos el mayor id que hay en la tabla.
         Long idEmpresa = maxId();
-        
-        try{
+
+        try {
             ps = conn.prepareStatement(INSERT_EMPRESA);
             ps.setLong(1, idEmpresa + 1);
             ps.setString(2, a.getNombre());
-            
-            ps.executeUpdate();
-            
+
+            if (ps.executeUpdate() > 0) {
+                insertado = true;
+            }
+
             JOptionPane.showMessageDialog(null, "Empresa insertada correctamente.");
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(EmpresaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
+        } finally {
             try {
-                ps.close();
+                if (ps != null) {
+                    ps.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(EmpresaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return insertado;
     }
 
     @Override
-    public void update(Empresa a) {
+    public boolean update(Empresa a) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -76,24 +82,28 @@ public class EmpresaDaoImpl implements EmpresaDao{
         List<Empresa> listado = new ArrayList<>();
         Statement st = null;
         ResultSet rs = null;
-        
-        try{
+
+        try {
             st = conn.createStatement();
             rs = st.executeQuery(GET_ALL_EMPRESAS);
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 Empresa emp = new Empresa();
                 emp.setId(rs.getLong(1));
                 emp.setNombre(rs.getString(2));
-                
+
                 listado.add(emp);
             }
         } catch (SQLException ex) {
             Logger.getLogger(EmpresaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
+        } finally {
             try {
-                rs.close();
-                st.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(EmpresaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -109,29 +119,33 @@ public class EmpresaDaoImpl implements EmpresaDao{
     @Override
     public Long maxId() {
         Long idMax = 0L;
-        
+
         Statement st = null;
         ResultSet rs = null;
-        
-        try{
+
+        try {
             st = conn.createStatement();
             rs = st.executeQuery(MAX_ID_EMPRESAS);
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 idMax = rs.getLong(1);
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(EmpresaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
+        } finally {
             try {
-                rs.close();
-                st.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(EmpresaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         return idMax;
     }
 }

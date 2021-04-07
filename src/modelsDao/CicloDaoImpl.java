@@ -23,9 +23,9 @@ import models.Ciclo;
  */
 public class CicloDaoImpl implements CicloDao {
 
-    private Connection conn;
-    
-    //consultas para el modelo
+    private final Connection conn;
+
+    //consultas para la tabla ciclos
     private final String INSERT_CICLO = "INSERT INTO ciclos (id, nombre) VALUES (?,?)";
     private final String GET_ALL_CICLOS = "SELECT * FROM ciclos";
     private final String MAX_ID_CICLO = "SELECT MAX(id) FROM ciclos";
@@ -35,18 +35,21 @@ public class CicloDaoImpl implements CicloDao {
     }
 
     @Override
-    public void insert(Ciclo a) {
+    public boolean insert(Ciclo a) {
+        boolean insertado = false;
         PreparedStatement ps = null;
-        
+
         //obtenemos el mayor id que hay en la tabla.
         Long idCiclo = maxId();
 
         try {
             ps = conn.prepareStatement(INSERT_CICLO);
-            ps.setLong(1, idCiclo+1);
+            ps.setLong(1, idCiclo + 1);
             ps.setString(2, a.getNombre());
 
-            ps.executeUpdate();
+            if (ps.executeUpdate() > 0) {
+                insertado = true;
+            }
 
             JOptionPane.showMessageDialog(null, "Ciclo insertado correctamente.");
 
@@ -54,18 +57,22 @@ public class CicloDaoImpl implements CicloDao {
             Logger.getLogger(CicloDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
 
             JOptionPane.showMessageDialog(null, "Error al insertar el ciclo.");
-            
+
         } finally {
             try {
-                ps.close();
+                if (ps != null) {
+                    ps.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(CicloDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
+        return insertado;
     }
 
     @Override
-    public void update(Ciclo a) {
+    public boolean update(Ciclo a) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -94,10 +101,14 @@ public class CicloDaoImpl implements CicloDao {
             }
         } catch (SQLException ex) {
             Logger.getLogger(CicloDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
+        } finally {
             try {
-                rs.close();
-                st.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(CicloDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -113,26 +124,30 @@ public class CicloDaoImpl implements CicloDao {
 
     @Override
     public Long maxId() {
-        
+
         Long idMax = 0L;
-        
+
         Statement st = null;
         ResultSet rs = null;
-        
-        try{
+
+        try {
             st = conn.createStatement();
             rs = st.executeQuery(MAX_ID_CICLO);
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 idMax = rs.getLong(1);
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(CicloDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
+        } finally {
             try {
-                rs.close();
-                st.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(CicloDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }

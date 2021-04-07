@@ -23,19 +23,21 @@ import models.Profesor;
  */
 public class ProfesorDaoImpl implements ProfesorDao {
 
-    private Connection conn;
+    private final Connection conn;
 
-    //Consultas para los profesores.
-    private final String ADD_PROFESOR = "INSERT INTO profesores (id, nombre, primer_apellido, segundo_apellido, email) VALUES (?, ?, ?, ?, ?)";
-    private final String GET_ALL_PROFESORES = "SELECT * FROM profesores";
-    private final String MAX_ID_PROFESORES = "SELECT MAX(id) FROM profesores";
+    //Consultas para la tabla profesores.
+    private static final String ADD_PROFESOR = "INSERT INTO profesores (id, nombre, primer_apellido, segundo_apellido, email) VALUES (?, ?, ?, ?, ?)";
+    private static final String GET_ALL_PROFESORES = "SELECT * FROM profesores";
+    private static final String MAX_ID_PROFESORES = "SELECT MAX(id) FROM profesores";
+    private static final String UPDATE_PROFESOR = "UPDATE profesores SET email=?, nombre=?, primer_apellido=?, segundo_apellido=? WHERE id=?";
 
     public ProfesorDaoImpl(Connection conn) {
         this.conn = conn;
     }
 
     @Override
-    public void insert(Profesor a) {
+    public boolean insert(Profesor a) {
+        boolean insertado = false;
         PreparedStatement ps = null;
 
         //Obtenemos el mayor id que hay en la tabla
@@ -49,24 +51,57 @@ public class ProfesorDaoImpl implements ProfesorDao {
             ps.setString(4, a.getSegundoApellido());
             ps.setString(5, a.getEmail());
 
-            ps.executeUpdate();
+            if (ps.executeUpdate() > 0) {
+                insertado = true;
+            }
 
             JOptionPane.showMessageDialog(null, "Profesor insertado correctamente.");
 
         } catch (SQLException ex) {
             Logger.getLogger(ProfesorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+
         } finally {
             try {
-                ps.close();
+                if (ps != null) {
+                    ps.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(ProfesorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return insertado;
     }
 
     @Override
-    public void update(Profesor a) {
+    public boolean update(Profesor a) {
+        boolean editado = false;
+        PreparedStatement ps = null;
 
+        try {
+            ps = conn.prepareStatement(UPDATE_PROFESOR);
+            ps.setString(1, a.getEmail());
+            ps.setString(2, a.getNombre());
+            ps.setString(3, a.getPrimerApellido());
+            ps.setString(4, a.getSegundoApellido());
+            ps.setLong(5, a.getId());
+
+            if (ps.executeUpdate() > 0) {
+                editado = true;
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(LoginDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return editado;
     }
 
     @Override
@@ -98,8 +133,12 @@ public class ProfesorDaoImpl implements ProfesorDao {
             Logger.getLogger(ProfesorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                rs.close();
-                st.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(ProfesorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -132,8 +171,12 @@ public class ProfesorDaoImpl implements ProfesorDao {
             Logger.getLogger(ProfesorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                rs.close();
-                st.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(ProfesorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }

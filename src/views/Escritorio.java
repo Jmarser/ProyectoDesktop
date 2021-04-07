@@ -43,9 +43,10 @@ public class Escritorio extends javax.swing.JFrame {
         this.setTitle("Sistema de gestión de FCT");//titulo de la ventana
         this.setExtendedState(MAXIMIZED_BOTH);//a pantalla completa
         this.setLocationRelativeTo(null);//centrado en la pantalla
-
+        initBotones();
         addIcono();
         cerrarVentana();
+        
     }
 
     /*Establecemos el icono de la aplicación*/
@@ -53,6 +54,18 @@ public class Escritorio extends javax.swing.JFrame {
         URL url = getClass().getResource(Constantes.RUTA_ICON_DESKTOP);
         ImageIcon icono = new ImageIcon(url);
         this.setIconImage(icono.getImage());
+    }
+    
+    private void initBotones(){
+        if(conn == null){
+            this.jm_profesores.setEnabled(false);
+            this.jm_alumnos.setEnabled(false);
+            this.jm_empresas.setEnabled(false);
+        }else{
+            this.jm_profesores.setEnabled(true);
+            this.jm_alumnos.setEnabled(true);
+            this.jm_empresas.setEnabled(true);
+        }
     }
 
     private void cerrarVentana() {
@@ -106,6 +119,7 @@ public class Escritorio extends javax.swing.JFrame {
         jmi_empresas = new javax.swing.JMenuItem();
         jm_ayuda = new javax.swing.JMenu();
         jmi_acerca = new javax.swing.JMenuItem();
+        jmi_reconectar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -190,6 +204,14 @@ public class Escritorio extends javax.swing.JFrame {
             }
         });
         jm_ayuda.add(jmi_acerca);
+
+        jmi_reconectar.setText("Reconectar");
+        jmi_reconectar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_reconectarActionPerformed(evt);
+            }
+        });
+        jm_ayuda.add(jmi_reconectar);
 
         jMenuBar1.add(jm_ayuda);
 
@@ -290,6 +312,14 @@ public class Escritorio extends javax.swing.JFrame {
         new Acerca(this, false).setVisible(true);
     }//GEN-LAST:event_jmi_acercaActionPerformed
 
+    private void jmi_reconectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_reconectarActionPerformed
+        // TODO add your handling code here:
+        if(conn == null){
+            conn = ConMySQL.getConexion();
+            initBotones();
+        }
+    }//GEN-LAST:event_jmi_reconectarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -338,5 +368,6 @@ public class Escritorio extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmi_gestionar_alumno;
     private javax.swing.JMenuItem jmi_gestionar_profesor;
     private javax.swing.JMenuItem jmi_gestionar_tutor;
+    private javax.swing.JMenuItem jmi_reconectar;
     // End of variables declaration//GEN-END:variables
 }

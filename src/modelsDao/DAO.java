@@ -14,9 +14,9 @@ import java.util.List;
  */
 public interface DAO<T> {
 
-    void insert(T a);
+    boolean insert(T a);
 
-    void update(T a);
+    boolean update(T a);
 
     void delete(T a);
 

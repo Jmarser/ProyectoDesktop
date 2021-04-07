@@ -14,4 +14,6 @@ import models.Login;
 public interface LoginDao extends DAO<Login>{
     
     Login getLoginByEmail(String email);
+    
+    Long getIdByEmail(String email);
 }

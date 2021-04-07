@@ -21,7 +21,7 @@ import utils.Utilidades;
  * @author JMARSER
  */
 public class GestionProfesores extends javax.swing.JInternalFrame {
-    
+
     private static final long serialVersionUID = 1L;
     public static String x;
     private final ManagerDaoImpl gestor = new ManagerDaoImpl();
@@ -32,12 +32,13 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         this.x = "x";
         initVentana();
         initBotones();
-        llenarNiveles();
-        llenarProfesores();
     }
 
     private void initVentana() {
         this.setTitle("GESTIÓN DE PROFESORES");
+        this.ocultar_pass.setVisible(false);
+        llenarNiveles();
+        llenarProfesores();
     }
 
     private void initBotones() {
@@ -46,12 +47,16 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
             this.btn_guardar.setEnabled(false);
             this.btn_generar.setEnabled(false);
             this.jpf_password.setEditable(false);
+            this.mostrar_pass.setEnabled(false);
+            this.ocultar_pass.setEnabled(false);
         } else {
             limpiarCampos();
             this.btn_modificar.setEnabled(false);
             this.btn_guardar.setEnabled(true);
             this.btn_generar.setEnabled(true);
             this.jpf_password.setEditable(true);
+            this.mostrar_pass.setEnabled(true);
+            this.ocultar_pass.setEnabled(true);
         }
     }
 
@@ -62,18 +67,18 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
     }
 
     private void llenarProfesores() {
-        
+
         this.jcb_profesores.removeAllItems();
-        
+
         listado = gestor.getProfesorDao().getAll();
-        
+
         this.jcb_profesores.addItem("Seleccione un profesor para editar.");
-        if(listado != null){
-            for(int i = 0; i<listado.size(); i++){
+        if (listado != null) {
+            for (int i = 0; i < listado.size(); i++) {
                 this.jcb_profesores.addItem(listado.get(i).toString());
             }
         }
-        
+
     }
 
     private void limpiarCampos() {
@@ -109,9 +114,9 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
             this.jtf_longitud.setText("");
         }
     }
-    
-    private void rellenarCampos(){
-        int posicion = this.jcb_profesores.getSelectedIndex()-1;
+
+    private void rellenarCampos() {
+        int posicion = this.jcb_profesores.getSelectedIndex() - 1;
         this.jtf_nombre.setText(listado.get(posicion).getNombre());
         this.jtf_primerApellido.setText(listado.get(posicion).getPrimerApellido());
         this.jtf_segundoApellido.setText(listado.get(posicion).getSegundoApellido());
@@ -120,16 +125,16 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         this.jpf_password.setText(login.getPassword());
         this.jcb_activo.setSelected(login.isActivo());
     }
-    
-    private boolean validarCampos(){
+
+    private boolean validarCampos() {
         boolean valido = false;
-        
-        if(!this.jtf_nombre.getText().isEmpty()){
-            if(!this.jtf_primerApellido.getText().isEmpty()){
-                if(!this.jtf_segundoApellido.getText().isEmpty()){
-                    if(!this.jtf_email.getText().isEmpty()){
-                        if(Utilidades.validarCorreo(this.jtf_email.getText())){
-                            if(jcb_activo.isSelected()){
+
+        if (!this.jtf_nombre.getText().isEmpty()) {
+            if (!this.jtf_primerApellido.getText().isEmpty()) {
+                if (!this.jtf_segundoApellido.getText().isEmpty()) {
+                    if (!this.jtf_email.getText().isEmpty()) {
+                        if (Utilidades.validarCorreo(this.jtf_email.getText())) {
+                            if (this.jpf_password.getPassword().length != 0) {
                                 valido = true;
                             }
                         }
@@ -139,25 +144,60 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         }
         return valido;
     }
-    
-    private void guardarProfesor(){
+
+    private void guardarProfesor() {
+
+        if (gestor.getLoginDao().insert(obtenerLogin())) {
+            if (gestor.getProfesorDao().insert(obtenerProfesor())) {
+                JOptionPane.showMessageDialog(null, "Profesor guardado correctamente.");
+            } else {
+                //codigo
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "El profesor ya se encuentra registrado");
+        }
+    }
+
+    private void editarProfesor() {
+        int indice = this.jcb_profesores.getSelectedIndex() - 1;
+        
+        Login login = obtenerLogin();
+        login.setId(gestor.getLoginDao().getIdByEmail(listado.get(indice).getEmail()));
+
+        Profesor profesor = obtenerProfesor();
+        profesor.setId(listado.get(indice).getId());
+        
+        if (gestor.getLoginDao().update(login)) {
+            if (gestor.getProfesorDao().update(profesor)) {
+                JOptionPane.showMessageDialog(null, "Profesor modificado correctamente.");
+            } else {
+                //codigo
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "El profesor no ha podido ser modificado");
+        }
+    }
+
+    private Profesor obtenerProfesor() {
         Profesor profe = new Profesor();
-        Login login = new Login();
-        
-        String email = this.jtf_email.getText().trim();
-        
+
         profe.setNombre(this.jtf_nombre.getText());
         profe.setPrimerApellido(this.jtf_primerApellido.getText());
         profe.setSegundoApellido(this.jtf_segundoApellido.getText());
-        profe.setEmail(email);
-        
-        login.setEmail(email);
+        profe.setEmail(this.jtf_email.getText().trim());
+
+        return profe;
+    }
+
+    private Login obtenerLogin() {
+        Login login = new Login();
+
+        login.setEmail(this.jtf_email.getText().trim());
         login.setPassword(String.valueOf(this.jpf_password.getPassword()));
         login.setRol(Constantes.PROFESOR);
         login.setActivo(this.jcb_activo.isSelected());
-        
-        gestor.getProfesorDao().insert(profe);
-        gestor.getLoginDao().insert(login);
+
+        return login;
     }
 
     /**
@@ -195,6 +235,8 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         jtf_longitud = new javax.swing.JTextField();
         btn_generar = new javax.swing.JButton();
         jpf_password = new javax.swing.JPasswordField();
+        mostrar_pass = new javax.swing.JLabel();
+        ocultar_pass = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -251,6 +293,11 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         });
 
         btn_modificar.setText("MODIFICAR");
+        btn_modificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_modificarActionPerformed(evt);
+            }
+        });
 
         btn_guardar.setText("GUARDAR");
         btn_guardar.addActionListener(new java.awt.event.ActionListener() {
@@ -298,7 +345,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
                 .addComponent(btn_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btn_limpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
                 .addComponent(btn_cerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
         );
@@ -380,6 +427,20 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        mostrar_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/pass-visible.png"))); // NOI18N
+        mostrar_pass.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                mostrar_passMousePressed(evt);
+            }
+        });
+
+        ocultar_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/pass-not-visible.png"))); // NOI18N
+        ocultar_pass.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                ocultar_passMousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -401,7 +462,12 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
                             .addComponent(jtf_primerApellido)
                             .addComponent(jtf_email)
                             .addComponent(jtf_segundoApellido)
-                            .addComponent(jpf_password, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jpf_password, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ocultar_pass)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(mostrar_pass)))))
                 .addGap(25, 25, 25)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
@@ -428,9 +494,13 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtf_email, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jpf_password, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jpf_password, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(mostrar_pass)))
+                            .addComponent(ocultar_pass)))
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jcb_activo)
@@ -451,7 +521,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel3, java.awt.BorderLayout.CENTER);
@@ -487,7 +557,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
     private void jcb_profesoresItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcb_profesoresItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             initBotones();
-            if(this.jcb_profesores.getSelectedIndex() != 0){
+            if (this.jcb_profesores.getSelectedIndex() != 0) {
                 rellenarCampos();
             }
         }
@@ -504,7 +574,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btn_cerrarActionPerformed
 
     private void btn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardarActionPerformed
-        if(validarCampos()){
+        if (validarCampos()) {
             guardarProfesor();
             limpiarCampos();
             llenarProfesores();
@@ -516,6 +586,29 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         limpiarCampos();
         initBotones();
     }//GEN-LAST:event_btn_nuevoActionPerformed
+
+    private void mostrar_passMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mostrar_passMousePressed
+        // TODO add your handling code here:
+        this.ocultar_pass.setVisible(true);
+        this.mostrar_pass.setVisible(false);
+        this.jpf_password.setEchoChar((char) 0);
+    }//GEN-LAST:event_mostrar_passMousePressed
+
+    private void ocultar_passMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ocultar_passMousePressed
+        // TODO add your handling code here:
+        this.ocultar_pass.setVisible(false);
+        this.mostrar_pass.setVisible(true);
+        this.jpf_password.setEchoChar('*');
+    }//GEN-LAST:event_ocultar_passMousePressed
+
+    private void btn_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modificarActionPerformed
+        // TODO add your handling code here:
+        if (validarCampos()) {
+            editarProfesor();
+            limpiarCampos();
+            llenarProfesores();
+        }
+    }//GEN-LAST:event_btn_modificarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -545,6 +638,8 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jtf_nombre;
     private javax.swing.JTextField jtf_primerApellido;
     private javax.swing.JTextField jtf_segundoApellido;
+    private javax.swing.JLabel mostrar_pass;
+    private javax.swing.JLabel ocultar_pass;
     // End of variables declaration//GEN-END:variables
 
 }

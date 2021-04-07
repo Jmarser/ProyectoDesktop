@@ -39,7 +39,7 @@ public class GestionTutores extends javax.swing.JInternalFrame {
 
     private void initVentana() {
         this.setTitle("GESTIÓN DE TUTORES");
-
+        this.ocultar_pass.setVisible(false);
         llenarNiveles();
         llenarTutores();
         llenarEmpresas();
@@ -51,12 +51,16 @@ public class GestionTutores extends javax.swing.JInternalFrame {
             this.btn_guardar.setEnabled(false);
             this.btn_generar.setEnabled(false);
             this.jpf_password.setEditable(false);
+            this.mostrar_pass.setEnabled(false);
+            this.ocultar_pass.setEnabled(false);
         } else {
             //limpiarCampos();
             this.btn_modificar.setEnabled(false);
             this.btn_guardar.setEnabled(true);
             this.btn_generar.setEnabled(true);
             this.jpf_password.setEditable(true);
+            this.mostrar_pass.setEnabled(true);
+            this.ocultar_pass.setEnabled(true);
         }
     }
 
@@ -154,7 +158,7 @@ public class GestionTutores extends javax.swing.JInternalFrame {
                     if (!this.jtf_email.getText().isEmpty()) {
                         if (this.jcb_empresas.getSelectedIndex() != 0) {
                             if (Utilidades.validarCorreo(this.jtf_email.getText())) {
-                                if (this.checkBox_activo.isSelected()) {
+                                if (this.jpf_password.getPassword().length != 0) {
                                     valido = true;
                                 }
                             }
@@ -165,26 +169,61 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         }
         return valido;
     }
-    
-    private void guardarTutor(){
+
+    private void guardarTutor() {
+
+        if (gestor.getLoginDao().insert(obtenerLogin())) {
+            if (gestor.getTutorDao().insert(obtenerTutor())) {
+                JOptionPane.showMessageDialog(null, "Tutor guardado correctamente.");
+            } else {
+                //codigo
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "El tutor ya se encuentra registrado");
+        }
+    }
+
+    private void editarTutor() {
+        int indice = this.jcb_tutores.getSelectedIndex()-1;
+        
+        Login login = obtenerLogin();
+        login.setId(gestor.getLoginDao().getIdByEmail(tutores.get(indice).getEmail()));
+        
+        Tutor tutor = obtenerTutor();
+        tutor.setId(tutores.get(indice).getId());
+        
+        if (gestor.getLoginDao().update(login)) {
+            if (gestor.getTutorDao().update(tutor)) {
+                JOptionPane.showMessageDialog(null, "Tutor modificado correctamente.");
+            } else {
+                //codigo
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "El tutor no ha podido ser modificado");
+        }
+    }
+
+    private Tutor obtenerTutor() {
         Tutor tutor = new Tutor();
-        Login login = new Login();
-        
-        String email = this.jtf_email.getText().trim();
-        
+               
         tutor.setNombre(this.jtf_nombre.getText());
         tutor.setPrimerApellido(this.jtf_primerApellido.getText());
         tutor.setSegundoApellido(this.jtf_segundoApellido.getText());
-        tutor.setEmail(email);
+        tutor.setEmail(this.jtf_email.getText().trim());
         tutor.setEmpresa(this.jcb_empresas.getSelectedItem().toString());
         
-        login.setEmail(email);
+        return tutor;
+    }
+
+    private Login obtenerLogin() {
+        Login login = new Login();
+
+        login.setEmail(this.jtf_email.getText().trim());
         login.setPassword(String.valueOf(this.jpf_password.getPassword()));
         login.setActivo(this.checkBox_activo.isSelected());
         login.setRol(Constantes.TUTOR);
-        
-        gestor.getLoginDao().insert(login);
-        gestor.getTutorDao().insert(tutor);
+
+        return login;
     }
 
     /**
@@ -224,6 +263,8 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         jpf_password = new javax.swing.JPasswordField();
         jLabel7 = new javax.swing.JLabel();
         jcb_empresas = new javax.swing.JComboBox<>();
+        mostrar_pass = new javax.swing.JLabel();
+        ocultar_pass = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -258,9 +299,9 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(116, 116, 116)
+                .addGap(119, 119, 119)
                 .addComponent(jcb_tutores, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(272, Short.MAX_VALUE))
+                .addContainerGap(269, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -275,6 +316,11 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         btn_nuevo.setText("NUEVO");
 
         btn_modificar.setText("MODIFICAR");
+        btn_modificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_modificarActionPerformed(evt);
+            }
+        });
 
         btn_guardar.setText("GUARDAR");
         btn_guardar.addActionListener(new java.awt.event.ActionListener() {
@@ -322,7 +368,7 @@ public class GestionTutores extends javax.swing.JInternalFrame {
                 .addComponent(btn_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btn_limpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, Short.MAX_VALUE)
                 .addComponent(btn_cerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
         );
@@ -407,6 +453,20 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel7.setText("Empresa:");
 
+        mostrar_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/pass-visible.png"))); // NOI18N
+        mostrar_pass.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                mostrar_passMousePressed(evt);
+            }
+        });
+
+        ocultar_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/pass-not-visible.png"))); // NOI18N
+        ocultar_pass.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                ocultar_passMousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -429,8 +489,13 @@ public class GestionTutores extends javax.swing.JInternalFrame {
                             .addComponent(jtf_primerApellido)
                             .addComponent(jtf_email)
                             .addComponent(jtf_segundoApellido)
-                            .addComponent(jpf_password, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                            .addComponent(jcb_empresas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jcb_empresas, 0, 250, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                .addComponent(jpf_password)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ocultar_pass)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(mostrar_pass)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16))
@@ -457,19 +522,21 @@ public class GestionTutores extends javax.swing.JInternalFrame {
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtf_email, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jpf_password, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jpf_password, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(mostrar_pass, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ocultar_pass))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jcb_empresas, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jcb_empresas, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(checkBox_activo))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(49, 49, 49)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(checkBox_activo)
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -541,14 +608,37 @@ public class GestionTutores extends javax.swing.JInternalFrame {
 
     private void btn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardarActionPerformed
         // TODO add your handling code here:
-        if(validarCampos()){
+        if (validarCampos()) {
             guardarTutor();
             limpiarCampos();
             llenarTutores();
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Error al guardar el tutor");
         }
     }//GEN-LAST:event_btn_guardarActionPerformed
+
+    private void mostrar_passMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mostrar_passMousePressed
+        // TODO add your handling code here:
+        this.ocultar_pass.setVisible(true);
+        this.mostrar_pass.setVisible(false);
+        this.jpf_password.setEchoChar((char) 0);
+    }//GEN-LAST:event_mostrar_passMousePressed
+
+    private void ocultar_passMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ocultar_passMousePressed
+        // TODO add your handling code here:
+        this.ocultar_pass.setVisible(false);
+        this.mostrar_pass.setVisible(true);
+        this.jpf_password.setEchoChar('*');
+    }//GEN-LAST:event_ocultar_passMousePressed
+
+    private void btn_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modificarActionPerformed
+        // TODO add your handling code here:
+        if (validarCampos()) {
+            editarTutor();
+            limpiarCampos();
+            llenarTutores();
+        }
+    }//GEN-LAST:event_btn_modificarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -580,5 +670,7 @@ public class GestionTutores extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jtf_nombre;
     private javax.swing.JTextField jtf_primerApellido;
     private javax.swing.JTextField jtf_segundoApellido;
+    private javax.swing.JLabel mostrar_pass;
+    private javax.swing.JLabel ocultar_pass;
     // End of variables declaration//GEN-END:variables
 }

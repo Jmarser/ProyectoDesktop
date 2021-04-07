@@ -23,25 +23,28 @@ import models.Alumno;
  */
 public class AlumnoDaoImpl implements AlumnoDao {
 
-    private Connection conn;
+    private final Connection conn;
 
-    private final String ADD_ALUMNO = "INSERT INTO alumnos (id, email, nombre, primer_apellido, segundo_apellido ,profesor_id, tutor_id) VALUES (?,?,?,?,?,?,?)";
-    private final String GET_ALL_ALUMNOS = "SELECT * FROM alumnos";
-    private final String MAX_ID_ALUMNOS = "SELECT MAX(id) FROM alumnos";
+    //consultas para la tabla alumnos
+    private static final String ADD_ALUMNO = "INSERT INTO alumnos (id, email, nombre, primer_apellido, segundo_apellido ,profesor_id, tutor_id) VALUES (?,?,?,?,?,?,?)";
+    private static final String GET_ALL_ALUMNOS = "SELECT * FROM alumnos";
+    private static final String MAX_ID_ALUMNOS = "SELECT MAX(id) FROM alumnos";
+    private static final String UPDATE_ALUMNO = "UPDATE alumnos SET email=?, nombre=?, primer_apellido=?, segundo_apellido=?, profesor_id=?, tutor_id=? WHERE id=?";
 
     public AlumnoDaoImpl(Connection conn) {
         this.conn = conn;
     }
 
     @Override
-    public void insert(Alumno a) {
+    public boolean insert(Alumno a) {
+        boolean insertado = false;
         PreparedStatement ps = null;
 
         //obtenemos el id mayor de la tabla alumnos
         Long idAlumno = maxId();
 
         try {
-            ps = conn.prepareCall(ADD_ALUMNO);
+            ps = conn.prepareStatement(ADD_ALUMNO);
 
             ps.setLong(1, idAlumno + 1);
             ps.setString(2, a.getEmail());
@@ -52,37 +55,56 @@ public class AlumnoDaoImpl implements AlumnoDao {
             ps.setLong(6, a.getProfesorID());
             ps.setLong(7, a.getTutorID());
 
-            ps.executeUpdate();
+            if (ps.executeUpdate() > 0) {
+                insertado = true;
+            }
 
-            JOptionPane.showMessageDialog(null, "Alumno insertado correctamente.");
         } catch (Exception e) {
             Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, e);
         } finally {
             try {
-                ps.close();
+                if (ps != null) {
+                    ps.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return insertado;
     }
 
     @Override
-    public void update(Alumno a) {
+    public boolean update(Alumno a) {
+        boolean editado = false;
         PreparedStatement ps = null;
 
         try {
-            ps = conn.prepareCall("");
-            ps.executeUpdate();
+            ps = conn.prepareStatement(UPDATE_ALUMNO);
+            ps.setString(1, a.getEmail());
+            ps.setString(2, a.getNombre());
+            ps.setString(3, a.getPrimerApellido());
+            ps.setString(4, a.getSegundoApellido());
+            ps.setLong(5, a.getProfesorID());
+            ps.setLong(6, a.getTutorID());
+            ps.setLong(7, a.getId());
+
+            if (ps.executeUpdate() > 0) {
+                editado = true;
+            }
 
         } catch (SQLException ex) {
-            Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoginDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                ps.close();
+                if (ps != null) {
+                    ps.close();
+                }
             } catch (SQLException ex) {
-                Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(LoginDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
+        return editado;
     }
 
     @Override
@@ -96,7 +118,9 @@ public class AlumnoDaoImpl implements AlumnoDao {
             Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                ps.close();
+                if (ps != null) {
+                    ps.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -130,8 +154,12 @@ public class AlumnoDaoImpl implements AlumnoDao {
             Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                rs.close();
-                st.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -141,8 +169,7 @@ public class AlumnoDaoImpl implements AlumnoDao {
 
     @Override
     public Alumno getOne(int id) {
-
-        return null;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -164,8 +191,12 @@ public class AlumnoDaoImpl implements AlumnoDao {
             Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                rs.close();
-                st.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -43,6 +43,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
 
     private void initVentana() {
         this.setTitle("GESTIÓN DE ALUMNOS");
+        this.ocultar_pass.setVisible(false);
         llenarNiveles();
         llenarAlumnos();
         llenarCiclos();
@@ -56,12 +57,16 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
             this.btn_guardar.setEnabled(false);
             this.btn_generar.setEnabled(false);
             this.jpf_password.setEditable(false);
+            this.mostrar_pass.setEnabled(false);
+            this.ocultar_pass.setEnabled(false);
         } else {
             //limpiarCampos();
             this.btn_modificar.setEnabled(false);
             this.btn_guardar.setEnabled(true);
             this.btn_generar.setEnabled(true);
             this.jpf_password.setEditable(true);
+            this.mostrar_pass.setEnabled(true);
+            this.ocultar_pass.setEnabled(true);
         }
     }
 
@@ -101,12 +106,12 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
 
     private void llenarTutores() {
         this.jcb_tutores.removeAllItems();
-        
+
         tutores = gestor.getTutorDao().getAll();
-        
+
         this.jcb_tutores.addItem("Seleccione un tutor para editar");
-        if(tutores != null){
-            for(int i = 0; i<tutores.size(); i++){
+        if (tutores != null) {
+            for (int i = 0; i < tutores.size(); i++) {
                 this.jcb_tutores.addItem(tutores.get(i).toString());
             }
         }
@@ -114,12 +119,12 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
 
     private void llenarProfesores() {
         this.jcb_profesores.removeAllItems();
-        
+
         profesores = gestor.getProfesorDao().getAll();
-        
+
         this.jcb_profesores.addItem("Seleccione un profesor para editar.");
-        if(profesores != null){
-            for(int i = 0; i<profesores.size(); i++){
+        if (profesores != null) {
+            for (int i = 0; i < profesores.size(); i++) {
                 this.jcb_profesores.addItem(profesores.get(i).toString());
             }
         }
@@ -160,94 +165,138 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         this.jpf_password.setText("");
         this.checkBox_activo.setSelected(false);
     }
-    
-    private void rellenarCampos(){
-        int posicion = this.jcb_alumnos.getSelectedIndex()-1;
+
+    private void rellenarCampos() {
+        int posicion = this.jcb_alumnos.getSelectedIndex() - 1;
         this.jtf_nombre.setText(alumnos.get(posicion).getNombre());
         this.jtf_primerApellido.setText(alumnos.get(posicion).getPrimerApellido());
         this.jtf_segundoApellido.setText(alumnos.get(posicion).getSegundoApellido());
         this.jtf_email.setText(alumnos.get(posicion).getEmail());
-        
+
         Login login = gestor.getLoginDao().getLoginByEmail(alumnos.get(posicion).getEmail());
         this.jpf_password.setText(login.getPassword());
         this.checkBox_activo.setSelected(login.isActivo());
-        
-        for(int i = 0; i<profesores.size(); i++){
-            if(profesores.get(i).getId() == alumnos.get(posicion).getProfesorID()){
+
+        for (int i = 0; i < profesores.size(); i++) {
+            if (profesores.get(i).getId() == alumnos.get(posicion).getProfesorID()) {
                 this.jcb_profesores.setSelectedIndex(i + 1);
             }
         }
-        
-        for(int i = 0; i<tutores.size(); i++){
-            if(tutores.get(i).getId() == alumnos.get(posicion).getTutorID()){
+
+        for (int i = 0; i < tutores.size(); i++) {
+            if (tutores.get(i).getId() == alumnos.get(posicion).getTutorID()) {
                 this.jcb_tutores.setSelectedIndex(i + 1);
             }
         }
-        
-        for(int i = 0; i<ciclos.size(); i++){
-            if(ciclos.get(i).getNombre().equals(alumnos.get(posicion).getCiclo())){
+
+        for (int i = 0; i < ciclos.size(); i++) {
+            if (ciclos.get(i).getNombre().equals(alumnos.get(posicion).getCiclo())) {
                 this.jcb_ciclos.setSelectedIndex(i + 1);
             }
         }
     }
-    
-    private boolean validarCampos(){
+
+    private boolean validarCampos() {
         boolean valido = false;
-        
-        if(!this.jtf_nombre.getText().isEmpty()){
-            if(!this.jtf_primerApellido.getText().isEmpty()){
-                if(!this.jtf_segundoApellido.getText().isEmpty()){
-                    if(!this.jtf_email.getText().isEmpty()){
-                        if(Utilidades.validarCorreo(this.jtf_email.getText().trim())){
-                            if(this.jpf_password.getPassword().length != 0){
-                                if(this.jcb_ciclos.getSelectedIndex() != 0){
-                                    if(this.jcb_profesores.getSelectedIndex() != 0){
-                                        if(this.jcb_tutores.getSelectedIndex() != 0){
-                                            if(this.checkBox_activo.isSelected()){
-                                                valido = true;
-                                            }
+
+        if (!this.jtf_nombre.getText().isEmpty()) {
+            if (!this.jtf_primerApellido.getText().isEmpty()) {
+                if (!this.jtf_segundoApellido.getText().isEmpty()) {
+                    if (!this.jtf_email.getText().isEmpty()) {
+                        if (Utilidades.validarCorreo(this.jtf_email.getText().trim())) {
+                            if (this.jpf_password.getPassword().length != 0) {
+                                if (this.jcb_ciclos.getSelectedIndex() != 0) {
+                                    if (this.jcb_profesores.getSelectedIndex() != 0) {
+                                        if (this.jcb_tutores.getSelectedIndex() != 0) {
+                                            valido = true;
+                                        }else{
+                                        JOptionPane.showMessageDialog(null, "Falta tutor");
                                         }
+                                    }else{
+                                    JOptionPane.showMessageDialog(null, "Falta profesor");
                                     }
+                                }else{
+                                    JOptionPane.showMessageDialog(null, "Falta ciclo");
                                 }
+                            }else{
+                                JOptionPane.showMessageDialog(null, "password corta");
                             }
+                        }else{
+                            JOptionPane.showMessageDialog(null, "correo invalido");
                         }
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Falta correo");
                     }
+                }else{
+                    JOptionPane.showMessageDialog(null, "Falta segundo apellido");
                 }
+            }else{
+                JOptionPane.showMessageDialog(null, "Falta primer apellido");
             }
+        }else{
+            JOptionPane.showMessageDialog(null, "Falta nombre");
         }
-        
+
         return valido;
     }
-    
-    private void guardarAlumno(){
+
+    private void guardarAlumno() {
+
+        if (gestor.getLoginDao().insert(obtenerLogin())) {
+            if (gestor.getAlumnoDao().insert(obtenerAlumno())) {
+                JOptionPane.showMessageDialog(null, "Alumno guardado correctamente.");
+            } else {
+                //codigo
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "El Alumno ya se encuentra registrado");
+        }
+    }
+
+    private void editarAlumno() {
+        
+        int indice = this.jcb_alumnos.getSelectedIndex()-1;
+
+        Login login = obtenerLogin();
+        login.setId(gestor.getLoginDao().getIdByEmail(alumnos.get(indice).getEmail()));
+        
+        Alumno alumno = obtenerAlumno();
+        alumno.setId(alumnos.get(indice).getId());
+        
+        if (gestor.getLoginDao().update(login)) {
+            if (gestor.getAlumnoDao().update(alumno)) {
+                JOptionPane.showMessageDialog(null, "Alumno modificado correctamente.");
+            } else {
+                //codigo
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "El Alumno no ha podido ser registrado");
+        }
+    }
+
+    private Alumno obtenerAlumno() {
         Alumno alumno = new Alumno();
-        Login login = new Login();
-        
-        String email = this.jtf_email.getText().trim();
-        Long idProfesor;
-        Long idTutor;
-        
-        idProfesor = profesores.get(this.jcb_profesores.getSelectedIndex()-1).getId();
-        idTutor = tutores.get(this.jcb_tutores.getSelectedIndex()-1).getId();
-        
-        
-        
+
         alumno.setNombre(this.jtf_nombre.getText());
         alumno.setPrimerApellido(this.jtf_primerApellido.getText());
         alumno.setSegundoApellido(this.jtf_segundoApellido.getText());
-        alumno.setEmail(email);
+        alumno.setEmail(this.jtf_email.getText().trim());
         //alumno.setCiclo(this.jcb_ciclos.getSelectedItem().toString());
-        alumno.setProfesorID(idProfesor);
-        alumno.setTutorID(idTutor);
-        
-        login.setEmail(email);
+        alumno.setProfesorID(profesores.get(this.jcb_profesores.getSelectedIndex() - 1).getId());
+        alumno.setTutorID(tutores.get(this.jcb_tutores.getSelectedIndex() - 1).getId());
+
+        return alumno;
+    }
+
+    private Login obtenerLogin() {
+        Login login = new Login();
+
+        login.setEmail(this.jtf_email.getText().trim());
         login.setPassword(String.valueOf(this.jpf_password.getPassword()));
         login.setActivo(this.checkBox_activo.isSelected());
         login.setRol(Constantes.ALUMNO);
-        
-        
-        gestor.getLoginDao().insert(login);
-        gestor.getAlumnoDao().insert(alumno);
+
+        return login;
     }
 
     /**
@@ -287,6 +336,8 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         jpf_password = new javax.swing.JPasswordField();
         jLabel9 = new javax.swing.JLabel();
         jcb_ciclos = new javax.swing.JComboBox<>();
+        mostrar_pass = new javax.swing.JLabel();
+        ocultar_pass = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -328,7 +379,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(116, 116, 116)
                 .addComponent(jcb_alumnos, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(272, Short.MAX_VALUE))
+                .addContainerGap(294, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -348,6 +399,11 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         });
 
         btn_modificar.setText("MODIFICAR");
+        btn_modificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_modificarActionPerformed(evt);
+            }
+        });
 
         btn_guardar.setText("GUARDAR");
         btn_guardar.addActionListener(new java.awt.event.ActionListener() {
@@ -375,14 +431,14 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, 0)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btn_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_limpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_cerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_modificar)
                     .addComponent(btn_nuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addGap(30, 30, 30))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -395,7 +451,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                 .addComponent(btn_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btn_limpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
                 .addComponent(btn_cerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43))
         );
@@ -480,6 +536,20 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel9.setText("Ciclo:");
 
+        mostrar_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/pass-visible.png"))); // NOI18N
+        mostrar_pass.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                mostrar_passMousePressed(evt);
+            }
+        });
+
+        ocultar_pass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/pass-not-visible.png"))); // NOI18N
+        ocultar_pass.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                ocultar_passMousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -502,8 +572,13 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                             .addComponent(jtf_primerApellido)
                             .addComponent(jtf_email)
                             .addComponent(jtf_segundoApellido)
-                            .addComponent(jpf_password, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                            .addComponent(jcb_ciclos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jcb_ciclos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jpf_password, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(mostrar_pass)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ocultar_pass)))))
                 .addGap(26, 26, 26)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16))
@@ -529,20 +604,24 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jtf_email, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jpf_password, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(mostrar_pass, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jpf_password, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(ocultar_pass))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jcb_ciclos, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jcb_ciclos, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(checkBox_activo))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(50, 50, 50)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                .addComponent(checkBox_activo)
-                .addContainerGap())
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "Tutores asignados"));
@@ -572,7 +651,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jcb_profesores, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jcb_tutores, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(131, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -597,7 +676,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGap(20, 20, 20))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -632,7 +711,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
     private void jcb_alumnosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcb_alumnosItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             initBotones();
-            if(this.jcb_alumnos.getSelectedIndex() != 0){
+            if (this.jcb_alumnos.getSelectedIndex() != 0) {
                 rellenarCampos();
             }
         }
@@ -668,12 +747,35 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
 
     private void btn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardarActionPerformed
         // TODO add your handling code here:
-        if(validarCampos()){
+        if (validarCampos()) {
             guardarAlumno();
             limpiarCampos();
             llenarAlumnos();
         }
     }//GEN-LAST:event_btn_guardarActionPerformed
+
+    private void mostrar_passMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mostrar_passMousePressed
+        // TODO add your handling code here:
+        this.ocultar_pass.setVisible(true);
+        this.mostrar_pass.setVisible(false);
+        this.jpf_password.setEchoChar((char) 0);
+    }//GEN-LAST:event_mostrar_passMousePressed
+
+    private void ocultar_passMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ocultar_passMousePressed
+        // TODO add your handling code here:
+        this.ocultar_pass.setVisible(false);
+        this.mostrar_pass.setVisible(true);
+        this.jpf_password.setEchoChar('*');
+    }//GEN-LAST:event_ocultar_passMousePressed
+
+    private void btn_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_modificarActionPerformed
+        // TODO add your handling code here:
+        if (validarCampos()) {
+            editarAlumno();
+            limpiarCampos();
+            llenarAlumnos();
+        }
+    }//GEN-LAST:event_btn_modificarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -710,5 +812,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jtf_nombre;
     private javax.swing.JTextField jtf_primerApellido;
     private javax.swing.JTextField jtf_segundoApellido;
+    private javax.swing.JLabel mostrar_pass;
+    private javax.swing.JLabel ocultar_pass;
     // End of variables declaration//GEN-END:variables
 }

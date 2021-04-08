@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import models.Login;
 import models.Profesor;
 import modelsDao.ManagerDaoImpl;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import utils.Constantes;
 import utils.Generador;
 import utils.Utilidades;
@@ -39,6 +40,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         this.ocultar_pass.setVisible(false);
         llenarNiveles();
         llenarProfesores();
+        AutoCompleteDecorator.decorate(jcb_profesores);
     }
 
     private void initBotones() {
@@ -47,16 +49,12 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
             this.btn_guardar.setEnabled(false);
             this.btn_generar.setEnabled(false);
             this.jpf_password.setEditable(false);
-            this.mostrar_pass.setEnabled(false);
-            this.ocultar_pass.setEnabled(false);
         } else {
             limpiarCampos();
             this.btn_modificar.setEnabled(false);
             this.btn_guardar.setEnabled(true);
             this.btn_generar.setEnabled(true);
             this.jpf_password.setEditable(true);
-            this.mostrar_pass.setEnabled(true);
-            this.ocultar_pass.setEnabled(true);
         }
     }
 
@@ -136,12 +134,25 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
                         if (Utilidades.validarCorreo(this.jtf_email.getText())) {
                             if (this.jpf_password.getPassword().length != 0) {
                                 valido = true;
+                            }else{
+                                this.jpf_password.requestFocus();
                             }
+                        }else{
+                            this.jtf_email.requestFocus();
                         }
+                    }else{
+                        this.jtf_email.requestFocus();
                     }
+                }else{
+                    this.jtf_segundoApellido.requestFocus();
                 }
+            }else{
+                this.jtf_primerApellido.requestFocus();
             }
+        }else{
+            this.jtf_nombre.requestFocus();
         }
+        
         return valido;
     }
 
@@ -578,6 +589,8 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
             guardarProfesor();
             limpiarCampos();
             llenarProfesores();
+        }else{
+            JOptionPane.showMessageDialog(null, "Faltan campos por rellenar.");
         }
     }//GEN-LAST:event_btn_guardarActionPerformed
 

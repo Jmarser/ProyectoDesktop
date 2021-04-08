@@ -15,6 +15,7 @@ import models.Login;
 import models.Profesor;
 import models.Tutor;
 import modelsDao.ManagerDaoImpl;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import utils.Constantes;
 import utils.Generador;
 import utils.Utilidades;
@@ -49,6 +50,14 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         llenarCiclos();
         llenarProfesores();
         llenarTutores();
+        autoCompletarJCB();
+    }
+    
+    private void autoCompletarJCB(){
+        AutoCompleteDecorator.decorate(jcb_alumnos);
+        AutoCompleteDecorator.decorate(jcb_ciclos);
+        AutoCompleteDecorator.decorate(jcb_profesores);
+        AutoCompleteDecorator.decorate(jcb_tutores);
     }
 
     private void initBotones() {
@@ -57,16 +66,12 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
             this.btn_guardar.setEnabled(false);
             this.btn_generar.setEnabled(false);
             this.jpf_password.setEditable(false);
-            this.mostrar_pass.setEnabled(false);
-            this.ocultar_pass.setEnabled(false);
         } else {
             //limpiarCampos();
             this.btn_modificar.setEnabled(false);
             this.btn_guardar.setEnabled(true);
             this.btn_generar.setEnabled(true);
             this.jpf_password.setEditable(true);
-            this.mostrar_pass.setEnabled(true);
-            this.ocultar_pass.setEnabled(true);
         }
     }
 
@@ -210,31 +215,31 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                                         if (this.jcb_tutores.getSelectedIndex() != 0) {
                                             valido = true;
                                         }else{
-                                        JOptionPane.showMessageDialog(null, "Falta tutor");
+                                            this.jcb_tutores.requestFocus();
                                         }
                                     }else{
-                                    JOptionPane.showMessageDialog(null, "Falta profesor");
+                                        this.jcb_profesores.requestFocus();
                                     }
                                 }else{
-                                    JOptionPane.showMessageDialog(null, "Falta ciclo");
+                                    this.jcb_ciclos.requestFocus();
                                 }
                             }else{
-                                JOptionPane.showMessageDialog(null, "password corta");
+                                this.jpf_password.requestFocus();
                             }
                         }else{
-                            JOptionPane.showMessageDialog(null, "correo invalido");
+                            this.jtf_email.requestFocus();
                         }
                     }else{
-                        JOptionPane.showMessageDialog(null, "Falta correo");
+                        this.jtf_email.requestFocus();
                     }
                 }else{
-                    JOptionPane.showMessageDialog(null, "Falta segundo apellido");
+                    this.jtf_segundoApellido.requestFocus();
                 }
             }else{
-                JOptionPane.showMessageDialog(null, "Falta primer apellido");
+                this.jtf_primerApellido.requestFocus();
             }
         }else{
-            JOptionPane.showMessageDialog(null, "Falta nombre");
+            this.jtf_nombre.requestFocus();
         }
 
         return valido;
@@ -780,6 +785,8 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
             guardarAlumno();
             limpiarCampos();
             llenarAlumnos();
+        }else{
+            JOptionPane.showMessageDialog(null, "Faltan campos por rellenar.");
         }
     }//GEN-LAST:event_btn_guardarActionPerformed
 

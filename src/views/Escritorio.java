@@ -134,6 +134,7 @@ public class Escritorio extends javax.swing.JFrame {
         jm_profesores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/teacher.png"))); // NOI18N
         jm_profesores.setText("PROFESORES");
 
+        jmi_gestionar_profesor.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         jmi_gestionar_profesor.setText("Gestionar Profesor");
         jmi_gestionar_profesor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -142,6 +143,7 @@ public class Escritorio extends javax.swing.JFrame {
         });
         jm_profesores.add(jmi_gestionar_profesor);
 
+        jmi_ciclos.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
         jmi_ciclos.setText("Ciclos");
         jmi_ciclos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -155,6 +157,7 @@ public class Escritorio extends javax.swing.JFrame {
         jm_alumnos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/student.png"))); // NOI18N
         jm_alumnos.setText("ALUMNOS");
 
+        jmi_gestionar_alumno.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
         jmi_gestionar_alumno.setText("Gestionar Alumno");
         jmi_gestionar_alumno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -168,6 +171,7 @@ public class Escritorio extends javax.swing.JFrame {
         jm_empresas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/empresa.png"))); // NOI18N
         jm_empresas.setText("EMPRESAS");
 
+        jmi_gestionar_tutor.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_MASK));
         jmi_gestionar_tutor.setText("Gestionar Tutor");
         jmi_gestionar_tutor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -176,6 +180,7 @@ public class Escritorio extends javax.swing.JFrame {
         });
         jm_empresas.add(jmi_gestionar_tutor);
 
+        jmi_empresas.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
         jmi_empresas.setText("Empresas");
         jmi_empresas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

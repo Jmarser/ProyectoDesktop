@@ -47,7 +47,7 @@ public class Acerca extends javax.swing.JDialog {
         jta_descripcion.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jta_descripcion.setLineWrap(true);
         jta_descripcion.setRows(5);
-        jta_descripcion.setText("   \n   Proyecto final de curso del ciclo de desarrollo de aplicaciones multiplataformas.\n\n   Desarrollardor: Juan Márquez Serrano.\n\n   Proyecto con el que se pretende actualizar el control de la FCT de los alumnos llevando las fichas diárias al siglo XXI. Las fichas se rellenarán desde una aplicación móvil y se almacenan en una base de datos remota gestionada por un servidor desarrollado en Spring boot. \nLos tutores tienen acceso a las fichas pudiendo leerlas y firmarlas. \n\n   Desde la aplicación de escritorio se realiza la gestión de los usuarios, tanto de los alumnos, profesores y tutores. También se gestionan los ciclos y las empresas.\n");
+        jta_descripcion.setText("   \n   Proyecto final de curso del ciclo de desarrollo de aplicaciones multiplataforma.\n\n   Desarrollardor: \n\tNombre: Juan Márquez Serrano.\n\tEmail:  Aenur32@gmail.com\n\tPortfolio: \n\tLinkdin: \n\t       \n\n   Esta aplicación es parte de un sistema de gestión de las fichas de seguimiento de la FCT. Las otras partes del sistema las componen un servidor desarrollado en Spring Boot, una base de datos MySql y una aplicación android.\n\n   Con ésta aplicación se pueden crear y modificar los diferentes usuarios que van ha hacer uso de ella y las relaciones entre ellos.\n");
         jta_descripcion.setWrapStyleWord(true);
         jScrollPane1.setViewportView(jta_descripcion);
 

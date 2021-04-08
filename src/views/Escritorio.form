@@ -14,6 +14,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jmi_gestionar_profesor">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+P"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Gestionar Profesor"/>
               </Properties>
               <Events>
@@ -22,6 +25,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmi_ciclos">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+C"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Ciclos"/>
               </Properties>
               <Events>
@@ -40,6 +46,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jmi_gestionar_alumno">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+A"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Gestionar Alumno"/>
               </Properties>
               <Events>
@@ -58,6 +67,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jmi_gestionar_tutor">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+T"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Gestionar Tutor"/>
               </Properties>
               <Events>
@@ -66,6 +78,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmi_empresas">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+E"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Empresas"/>
               </Properties>
               <Events>

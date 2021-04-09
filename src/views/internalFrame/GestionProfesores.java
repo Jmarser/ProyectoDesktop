@@ -5,9 +5,14 @@
  */
 package views.internalFrame;
 
+import conexion.ConMySQL;
 import java.awt.event.ItemEvent;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import models.Login;
 import models.Profesor;
@@ -25,6 +30,9 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
 
     private static final long serialVersionUID = 1L;
     public static String x;
+
+    private final Connection conn = ConMySQL.getConexion();
+
     private final ManagerDaoImpl gestor = new ManagerDaoImpl();
     private List<Profesor> listado = new ArrayList<>();
 
@@ -35,14 +43,19 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         initBotones();
     }
 
+    /*Iniciamos algunas caracteristicas de la ventana y algunos de los componentes*/
     private void initVentana() {
         this.setTitle("GESTIÓN DE PROFESORES");
         this.ocultar_pass.setVisible(false);
         llenarNiveles();
         llenarProfesores();
-        AutoCompleteDecorator.decorate(jcb_profesores);
+        AutoCompleteDecorator.decorate(jcb_profesores);//función autocompletar del JComboBox
     }
 
+    /*Dependiendo de la acción que queramos hacer, guardar o editar habilitaremos
+    unos botones u otros.
+    También se deshabilita el campo password para que no pueda ser modificado
+    sólo por el usuario desde la app movil*/
     private void initBotones() {
         if (this.jcb_profesores.getSelectedIndex() != 0) {
             this.btn_modificar.setEnabled(true);
@@ -58,14 +71,17 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         }
     }
 
+    /*Llenamos los niveles de seguridad para la generación de password aleatorios
+    como éstos no van a variar usamos un String[] ya establecido*/
     private void llenarNiveles() {
         for (String nivel : Constantes.NIVELES) {
             this.jcb_nivelSeguridad.addItem(nivel);
         }
     }
 
+    /*Obtenemops los profesores de la base de datos*/
     private void llenarProfesores() {
-
+        /*Para evitar que se repitan los items, borramos los que contiene el JComboBox*/
         this.jcb_profesores.removeAllItems();
 
         listado = gestor.getProfesorDao().getAll();
@@ -91,6 +107,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         this.jcb_activo.setSelected(false);
     }
 
+    /*Establecemos la longitud mínima dependiendo del nivel de seguridad seleccionado*/
     private void longitudMinima() {
         if (this.jcb_nivelSeguridad.getSelectedIndex() != 0) {
             String nivel = this.jcb_nivelSeguridad.getSelectedItem().toString();
@@ -134,58 +151,113 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
                         if (Utilidades.validarCorreo(this.jtf_email.getText())) {
                             if (this.jpf_password.getPassword().length != 0) {
                                 valido = true;
-                            }else{
+                            } else {
                                 this.jpf_password.requestFocus();
                             }
-                        }else{
+                        } else {
                             this.jtf_email.requestFocus();
                         }
-                    }else{
+                    } else {
                         this.jtf_email.requestFocus();
                     }
-                }else{
+                } else {
                     this.jtf_segundoApellido.requestFocus();
                 }
-            }else{
+            } else {
                 this.jtf_primerApellido.requestFocus();
             }
-        }else{
+        } else {
             this.jtf_nombre.requestFocus();
         }
-        
+
         return valido;
     }
 
+    /*Solicitamos guardar los datos del profesor en la tabla profesores y en la 
+    tabla login, por lo que vamos a gestionar las transacciones en la BBDD de
+    manera manual*/
     private void guardarProfesor() {
 
-        if (gestor.getLoginDao().insert(obtenerLogin())) {
-            if (gestor.getProfesorDao().insert(obtenerProfesor())) {
-                JOptionPane.showMessageDialog(null, "Profesor guardado correctamente.");
+        try {
+
+            /*Desactivamos el autocommit para poder gestionar las consultas por
+            transacciones*/
+            conn.setAutoCommit(false);
+
+            if (gestor.getLoginDao().insert(obtenerLogin())) {
+                if (gestor.getProfesorDao().insert(obtenerProfesor())) {
+                    JOptionPane.showMessageDialog(null, "Profesor guardado correctamente.");
+                } else {
+                    /*Como ha acurrido un error al guardar el profesor en la tabla
+                    profesores pero no en la tabla login, hacemos un rollback para
+                    devolver la base de datos al estado anterior.*/
+                    conn.rollback();
+                    JOptionPane.showMessageDialog(null, "Ha ocurrido un error al guardar el profesor");
+                }
             } else {
-                //codigo
+                JOptionPane.showMessageDialog(null, "El profesor ya se encuentra registrado");
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "El profesor ya se encuentra registrado");
+
+            //Los dos insert se han realizado correctamente
+            conn.commit();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(GestionProfesores.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            /*Nos aseguramos activar el autocommit*/
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(GestionProfesores.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
+    /*Solicitamos modificar los datos del profesor en la BBDD.
+    como en el caso de la inserción de datos, aqui también debemos actuar sobre
+    dos tablas con lo que vamos a gestionar manualmente las transacciones a la
+    BBDD*/
     private void editarProfesor() {
         int indice = this.jcb_profesores.getSelectedIndex() - 1;
-        
+
         Login login = obtenerLogin();
         login.setId(gestor.getLoginDao().getIdByEmail(listado.get(indice).getEmail()));
 
         Profesor profesor = obtenerProfesor();
         profesor.setId(listado.get(indice).getId());
-        
-        if (gestor.getLoginDao().update(login)) {
-            if (gestor.getProfesorDao().update(profesor)) {
-                JOptionPane.showMessageDialog(null, "Profesor modificado correctamente.");
+
+        try {
+
+            /*Desactivamos la función autocommit de la base de datos para gestionar
+            las transacciones manualmente.*/
+            conn.setAutoCommit(false);
+
+            if (gestor.getLoginDao().update(login)) {
+                if (gestor.getProfesorDao().update(profesor)) {
+                    JOptionPane.showMessageDialog(null, "Profesor modificado correctamente.");
+                } else {
+                    /*se ha realizado la actualización de la tabla login pero no de
+                la tabla de profesores, por lo que hacemos un rollback para 
+                devolver la BBDD al estado anterior*/
+                    conn.rollback();
+                    JOptionPane.showMessageDialog(null, "Ha ocurrido un error al actualizar el profesor.");
+                }
+
+                //Las dos actualizaciones se han realizado correctamente
+                conn.commit();
             } else {
-                //codigo
+                JOptionPane.showMessageDialog(null, "El profesor no ha podido ser modificado");
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "El profesor no ha podido ser modificado");
+
+        } catch (SQLException ex) {
+            Logger.getLogger(GestionProfesores.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            /*Nos aseguramos de activar el autocommit*/
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(GestionProfesores.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -589,7 +661,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
             guardarProfesor();
             limpiarCampos();
             llenarProfesores();
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Faltan campos por rellenar.");
         }
     }//GEN-LAST:event_btn_guardarActionPerformed
@@ -620,6 +692,8 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
             editarProfesor();
             limpiarCampos();
             llenarProfesores();
+        } else {
+            JOptionPane.showMessageDialog(null, "Faltan campos por rellenar.");
         }
     }//GEN-LAST:event_btn_modificarActionPerformed
 

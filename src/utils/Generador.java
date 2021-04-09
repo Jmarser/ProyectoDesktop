@@ -1,3 +1,8 @@
+/**
+ * Clase que nos permite la generación de claves aleatorias.
+ * nos permite la generación de claves por niveles de seguridad y de longitud
+ * variable.
+ */
 package utils;
 
 import java.security.SecureRandom;
@@ -67,6 +72,8 @@ public class Generador {
         return aux.substring(indice, (longitud + indice));
     }
 
+    /*Este método es parecido al "generador" pero en este caso no necesitamos
+    que cumpla un patrón de verificación ya que sólo devolverá números.*/
     private String pinCardLevel(int longitud) {
         String aux;
 
@@ -87,6 +94,8 @@ public class Generador {
         return aux.substring(0, longitud);
     }
 
+    /*Método que convierte el String en un array de caracteres para poder ser
+    mezclados y nos devuelve un nuevo string mezclado*/
     private String getCombinacion(String letras, int longitud) {
         char[] caracteres = letras.toCharArray();
         mezclar(caracteres, longitud);
@@ -94,6 +103,9 @@ public class Generador {
         return String.valueOf(caracteres);
     }
 
+    /*Realizamos la mezcla de los caracteres que componen la cadena para generar
+    el password. Esta mezcla se realiza intercambiando dos posiciones de la cadena
+    un número aleatorio de veces*/
     private void mezclar(char[] caracteres, int longitud) {
         Random rdn = new SecureRandom();
 

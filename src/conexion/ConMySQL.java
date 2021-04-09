@@ -1,5 +1,5 @@
 /**
- *  ********* Clase conexión a bbdd con patrón singletón *********
+ * Clase conexión a bbdd con patrón singletón 
  * con esta clase garantizamos que nuestro programa sólo realice una conexión a
  * la bbdd independientemente de las veces que llamemos a la clase conexión.
  */

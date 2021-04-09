@@ -8,7 +8,10 @@ package views.internalFrame;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import models.Empresa;
 import modelsDao.ManagerDaoImpl;
 
@@ -33,18 +36,38 @@ public class Empresas extends javax.swing.JInternalFrame {
         initVentana();
     }
 
+    /*Iniciamos algunas características de la ventana*/
     private void initVentana() {
         this.setTitle("GESTIÓN DE EMPRESAS");
         initTabla();
         mostrarEmpresas();
     }
 
+    /*Damos estilo a la tabla y nombramos sus columnas*/
     private void initTabla() {
         modelo_tabla.addColumn("Id");
         modelo_tabla.addColumn("Empresa");
         this.jt_listaEmpresas.setModel(modelo_tabla);
+        
+        //determinamos el ancho de las columnas
+        this.jt_listaEmpresas.getColumnModel().getColumn(0).setPreferredWidth(10);
+        this.jt_listaEmpresas.getColumnModel().getColumn(1).setPreferredWidth(300);
+        
+        //centramos el contenido de las celdas
+        DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
+        tcr.setHorizontalAlignment(SwingConstants.CENTER);
+        this.jt_listaEmpresas.getColumnModel().getColumn(0).setCellRenderer(tcr);
+        this.jt_listaEmpresas.getColumnModel().getColumn(1).setCellRenderer(tcr);
+        
+        /*Para el centrado del contenido de la cabecera necesitamos instanciar 
+        otra clase*/
+        JTableHeader th = this.jt_listaEmpresas.getTableHeader();
+        th.setDefaultRenderer(tcr);
+        this.jt_listaEmpresas.setTableHeader(th);
     }
 
+    /*Obtenemos las empresas que hay guardadas en la base de datos y las cargamas
+    en el JComboBox correspondiente*/
     private void mostrarEmpresas() {
         limpiarTabla();
         listadoEmpresas = (ArrayList<Empresa>) gestor.getEmpresaDao().getAll();
@@ -61,6 +84,7 @@ public class Empresas extends javax.swing.JInternalFrame {
         }
     }
 
+    /*Método con el que solicitamos guardar una nueva empresa en la base de datos*/
     private void addEmpresa() {
         if (validarCampos()) {
             Empresa emp = new Empresa();

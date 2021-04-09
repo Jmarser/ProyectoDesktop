@@ -1,7 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Esta clase implementa la interface específica de su clase modelo, con lo que
+ * implementaremos todos los métodos tanto generales como específicos a usar 
+ * con este modelo.
+ * Además recive como parámetro una instancia de la conexión a la base de datos
  */
 package modelsDao;
 
@@ -14,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import models.Empresa;
 
 /**

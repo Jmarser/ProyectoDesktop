@@ -8,7 +8,10 @@ package views.internalFrame;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import models.Ciclo;
 import modelsDao.ManagerDaoImpl;
 
@@ -33,18 +36,37 @@ public class Ciclos extends javax.swing.JInternalFrame {
         initVentana();
     }
 
+    /*Iniciamos algunas características de la ventana*/
     private void initVentana() {
         this.setTitle("GESTIÓN DE CICLOS");
         initTabla();
         mostrarCiclos();
     }
 
+    /*Damos estilo a la tabla y nombramos sus columnas*/
     private void initTabla() {
         modelo_tabla.addColumn("Id");
         modelo_tabla.addColumn("Nombre ciclo");
         this.jt_listaCiclos.setModel(modelo_tabla);
+        
+        //especificamos el ancho de las columnas
+        this.jt_listaCiclos.getColumnModel().getColumn(0).setPreferredWidth(20);
+        this.jt_listaCiclos.getColumnModel().getColumn(1).setPreferredWidth(300);
+        
+        //centramos el contenido de las celdas
+        DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
+        tcr.setHorizontalAlignment(SwingConstants.CENTER);
+        this.jt_listaCiclos.getColumnModel().getColumn(0).setCellRenderer(tcr);
+        this.jt_listaCiclos.getColumnModel().getColumn(1).setCellRenderer(tcr);
+        
+        //para centrar el contenido de la cabecera necesitamos de esta clase
+        JTableHeader th = this.jt_listaCiclos.getTableHeader();
+        th.setDefaultRenderer(tcr);
+        this.jt_listaCiclos.setTableHeader(th);
     }
 
+    /*Obtenemos los ciclos que hay guardados en la base de datos y los cargamos
+    en el JComboBox correspondiente*/
     private void mostrarCiclos() {
         limpiarTabla();
         listadoCiclos = (ArrayList<Ciclo>) gestor.getCicloDao().getAll();
@@ -62,19 +84,21 @@ public class Ciclos extends javax.swing.JInternalFrame {
 
     }
 
+    /*Método con el que solicitamos que un ciclo se guarde en la base de datos*/
     private void addCiclo() {
         if (validarCampos()) {
             Ciclo ciclo = new Ciclo();
             ciclo.setNombre(this.jtf_nuevoCiclo.getText());
-
-            if(gestor.getCicloDao().insert(ciclo)){
+            
+            if (gestor.getCicloDao().insert(ciclo)) {
                 JOptionPane.showMessageDialog(null, "Ciclo guardado correctamente.");
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Error al guardar el ciclo.");
             }
-            
+
         } else {
-            JOptionPane.showMessageDialog(null, "Ingrese un nombre para el ciclo.");
+            //no se ha introducido un ciclo por lo que establecemos el foco en el JTextField
+            this.jtf_nuevoCiclo.requestFocus();
         }
         limpiarCampo();
         mostrarCiclos();
@@ -136,16 +160,30 @@ public class Ciclos extends javax.swing.JInternalFrame {
 
         jt_listaCiclos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Title 1", "Title 2"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jt_listaCiclos);
+        if (jt_listaCiclos.getColumnModel().getColumnCount() > 0) {
+            jt_listaCiclos.getColumnModel().getColumn(0).setResizable(false);
+            jt_listaCiclos.getColumnModel().getColumn(0).setPreferredWidth(10);
+            jt_listaCiclos.getColumnModel().getColumn(1).setResizable(false);
+            jt_listaCiclos.getColumnModel().getColumn(1).setPreferredWidth(300);
+        }
 
         btn_guardar.setText("GUARDAR");
         btn_guardar.addActionListener(new java.awt.event.ActionListener() {

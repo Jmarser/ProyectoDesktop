@@ -1,8 +1,8 @@
 /**
  * Interface en la que declaramos los métodos fundamentales para realizar un
  * CRUD.
- * Esta interface es genérica por lo que la podemos implementar en todas las
- * clases que compongan nuestro programa.
+ * Esta interface es genérica por lo que otras ointerfaces pueden extender de ella 
+ * indicando sólo el objeto específico que va a recibir.
  */
 package modelsDao;
 

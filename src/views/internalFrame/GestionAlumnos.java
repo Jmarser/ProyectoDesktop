@@ -5,9 +5,15 @@
  */
 package views.internalFrame;
 
+import conexion.ConMySQL;
 import java.awt.event.ItemEvent;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import models.Alumno;
 import models.Ciclo;
@@ -28,8 +34,11 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
 
     private static final long serialVersionUID = 1L;
     public static String x;
+    private final Connection conn = ConMySQL.getConexion();
 
-    private ManagerDaoImpl gestor = new ManagerDaoImpl();
+    /*atributo que gestiona la conexión de la base de datos y los métodos de 
+    consulta de los diferentes modelos*/
+    private final ManagerDaoImpl gestor = new ManagerDaoImpl();
     private List<Alumno> alumnos = new ArrayList<>();
     private List<Profesor> profesores = new ArrayList<>();
     private List<Tutor> tutores = new ArrayList<>();
@@ -42,6 +51,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         initBotones();
     }
 
+    /*Iniciamos algunas características de la ventana y algunos de los componentes*/
     private void initVentana() {
         this.setTitle("GESTIÓN DE ALUMNOS");
         this.ocultar_pass.setVisible(false);
@@ -52,14 +62,20 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         llenarTutores();
         autoCompletarJCB();
     }
-    
-    private void autoCompletarJCB(){
+
+    /*Incluimos la función de autocompletar el texto en los JComboBox para el caso
+    de que tengamos muchos registros*/
+    private void autoCompletarJCB() {
         AutoCompleteDecorator.decorate(jcb_alumnos);
         AutoCompleteDecorator.decorate(jcb_ciclos);
         AutoCompleteDecorator.decorate(jcb_profesores);
         AutoCompleteDecorator.decorate(jcb_tutores);
     }
 
+    /*Método con el que habilitamos o deshabilitamos botones dependiendo de la 
+    acción que queramos hacer, guardar o editar.
+    deshabilitamos el cuadro de password para que sólo el usuario pueda cambiar
+    el password.*/
     private void initBotones() {
         if (this.jcb_alumnos.getSelectedIndex() != 0) {
             this.btn_modificar.setEnabled(true);
@@ -75,13 +91,18 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         }
     }
 
+    /*Llenamos los niveles de seguridad para la generación de password aleatorios
+    como éstos no van a variar usamos un String[] ya establecido*/
     private void llenarNiveles() {
         for (String nivel : Constantes.NIVELES) {
             this.jcb_nivelSeguridad.addItem(nivel);
         }
     }
 
+    /*Obtenemos los alumnos que hay en la base de datos*/
     private void llenarAlumnos() {
+        /*Para evitar que se agregen repetidos, borramos los que ya haya en el 
+        JComboBox*/
         this.jcb_alumnos.removeAllItems();
 
         alumnos = gestor.getAlumnoDao().getAll();
@@ -94,7 +115,9 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         }
     }
 
+    /*Obtenemos los diferentes ciclos que hay guardados en la base de datos*/
     private void llenarCiclos() {
+        //Eliminamos los Items que haya en el JComboBox
         this.jcb_ciclos.removeAllItems();
 
         ciclos = gestor.getCicloDao().getAll();
@@ -109,7 +132,9 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
 
     }
 
+    /*Obtenemos los diferentes tutores que haya en la base de datos*/
     private void llenarTutores() {
+        //Eliminamos los Items que haya en el JComboBox
         this.jcb_tutores.removeAllItems();
 
         tutores = gestor.getTutorDao().getAll();
@@ -122,7 +147,9 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         }
     }
 
+    /*Obtenemos los diferentes profesores que haya en la base de datos*/
     private void llenarProfesores() {
+        //Eliminamos los Items que haya en el JComboBox
         this.jcb_profesores.removeAllItems();
 
         profesores = gestor.getProfesorDao().getAll();
@@ -135,6 +162,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         }
     }
 
+    /*Establecemos la longitud mínima del password dependiendo del nivel de seguridad*/
     private void longitudMinima() {
         if (this.jcb_nivelSeguridad.getSelectedIndex() != 0) {
             String nivel = this.jcb_nivelSeguridad.getSelectedItem().toString();
@@ -171,6 +199,8 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         this.checkBox_activo.setSelected(false);
     }
 
+    /*Al seleccionar un nombre de alumno del JComboBox, mostramos sus datos en 
+    los campos correspondientes.*/
     private void rellenarCampos() {
         int posicion = this.jcb_alumnos.getSelectedIndex() - 1;
         this.jtf_nombre.setText(alumnos.get(posicion).getNombre());
@@ -183,13 +213,14 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         this.checkBox_activo.setSelected(login.isActivo());
 
         for (int i = 0; i < profesores.size(); i++) {
-            if (profesores.get(i).getId() == alumnos.get(posicion).getProfesorID()) {
+            //La comprobacion de dos Long se hace con el siguiente método
+            if (Objects.equals(profesores.get(i).getId(), alumnos.get(posicion).getProfesorID())) {
                 this.jcb_profesores.setSelectedIndex(i + 1);
             }
         }
 
         for (int i = 0; i < tutores.size(); i++) {
-            if (tutores.get(i).getId() == alumnos.get(posicion).getTutorID()) {
+            if (Objects.equals(tutores.get(i).getId(), alumnos.get(posicion).getTutorID())) {
                 this.jcb_tutores.setSelectedIndex(i + 1);
             }
         }
@@ -214,68 +245,126 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                                     if (this.jcb_profesores.getSelectedIndex() != 0) {
                                         if (this.jcb_tutores.getSelectedIndex() != 0) {
                                             valido = true;
-                                        }else{
+
+                                        } else {//establecemos el foco en el campo con el error
                                             this.jcb_tutores.requestFocus();
                                         }
-                                    }else{
+                                    } else {
                                         this.jcb_profesores.requestFocus();
                                     }
-                                }else{
+                                } else {
                                     this.jcb_ciclos.requestFocus();
                                 }
-                            }else{
+                            } else {
                                 this.jpf_password.requestFocus();
                             }
-                        }else{
+                        } else {
                             this.jtf_email.requestFocus();
                         }
-                    }else{
+                    } else {
                         this.jtf_email.requestFocus();
                     }
-                }else{
+                } else {
                     this.jtf_segundoApellido.requestFocus();
                 }
-            }else{
+            } else {
                 this.jtf_primerApellido.requestFocus();
             }
-        }else{
+        } else {
             this.jtf_nombre.requestFocus();
         }
 
         return valido;
     }
 
+    /*solicitamos que se guarde el alumno en la base de datos, tanto en la tabla
+    de login como en la tabla de alumnos. Al ser un guardado en varias tablas
+    que debe efectuarse si o si, vamos a controlarlo con gestión de transacciones 
+    de la base de datos*/
     private void guardarAlumno() {
 
-        if (gestor.getLoginDao().insert(obtenerLogin())) {
-            if (gestor.getAlumnoDao().insert(obtenerAlumno())) {
-                JOptionPane.showMessageDialog(null, "Alumno guardado correctamente.");
+        try {
+            conn.setAutoCommit(false);//desactivamos el autocommit de la BBDD
+
+            if (gestor.getLoginDao().insert(obtenerLogin())) {
+                if (gestor.getAlumnoDao().insert(obtenerAlumno())) {
+                    JOptionPane.showMessageDialog(null, "Alumno guardado correctamente.");
+                } else {
+                    /*En el caso de que se guarde el login, pero no el alumno, borramos
+                    el registro de la tabla login para poder guardarlo más adelante*/
+                    //gestor.getLoginDao().delete(obtenerLogin());
+
+                    JOptionPane.showMessageDialog(null, "Ha ocurrido un fallo al guardar el alumno");
+
+                    /*estamos en el caso de que se ha guardado en la tabla login
+                    pero no en la tabla alumno, por lo que efectuamos un rolback
+                    y devolvemos la BBDD al estado que tenia antes de hacer el 
+                    primer insert*/
+                    conn.rollback();
+                }
             } else {
-                //codigo
+                JOptionPane.showMessageDialog(null, "El Alumno ya se encuentra registrado");
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "El Alumno ya se encuentra registrado");
+            //se han realizado los dos insert
+            conn.commit();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(GestionAlumnos.class.getName()).log(Level.SEVERE, null, ex);
+
+        } finally {
+            try {
+                /*Nos aseguramos de activar el autocommit*/
+                conn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(GestionAlumnos.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
+    /*Solicitamos la modificación de los datos del alumno, como la modificación 
+    debe realizarse en dos tabla vamos a controlar que se realiza correctamente 
+    gestionando las transacciones */
     private void editarAlumno() {
-        
-        int indice = this.jcb_alumnos.getSelectedIndex()-1;
+
+        int indice = this.jcb_alumnos.getSelectedIndex() - 1;
 
         Login login = obtenerLogin();
         login.setId(gestor.getLoginDao().getIdByEmail(alumnos.get(indice).getEmail()));
-        
+
         Alumno alumno = obtenerAlumno();
         alumno.setId(alumnos.get(indice).getId());
-        
-        if (gestor.getLoginDao().update(login)) {
-            if (gestor.getAlumnoDao().update(alumno)) {
-                JOptionPane.showMessageDialog(null, "Alumno modificado correctamente.");
+
+        try {
+
+            conn.setAutoCommit(false);//desactivamos el autocommit de la BBDD
+
+            if (gestor.getLoginDao().update(login)) {
+                if (gestor.getAlumnoDao().update(alumno)) {
+                    JOptionPane.showMessageDialog(null, "Alumno modificado correctamente.");
+                } else {
+                    //codigo
+                    /*Estamos en el caso de que se ha actualizado el registro en
+                    la tabla login pero ha ocurrido un error al actualizar en la 
+                    tabla de alumnos, por lo que vamos ha hacer un rollback para
+                    devolver la BBDD a su estado anterior.*/
+                    conn.rollback();
+                    JOptionPane.showMessageDialog(null, "Ha ocurrido un error al actualizar el alumno.");
+                }
             } else {
-                //codigo
+                JOptionPane.showMessageDialog(null, "El Alumno no ha podido ser registrado");
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "El Alumno no ha podido ser registrado");
+            
+            //se han realizado correctamente los dos update
+            conn.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(GestionAlumnos.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            try {
+                /*Nos aseguramos de activar el autocommit*/
+                conn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(GestionAlumnos.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -785,7 +874,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
             guardarAlumno();
             limpiarCampos();
             llenarAlumnos();
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Faltan campos por rellenar.");
         }
     }//GEN-LAST:event_btn_guardarActionPerformed
@@ -810,9 +899,15 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
             editarAlumno();
             limpiarCampos();
             llenarAlumnos();
+        } else {
+            JOptionPane.showMessageDialog(null, "Faltan campos por rellenar.");
         }
     }//GEN-LAST:event_btn_modificarActionPerformed
 
+    /**
+     * Con los siguientes métodos de respuesta a eventos nos aseguramos que al
+     * desplegar el JComboBox este este actualizado
+     */
     private void jcb_ciclosPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jcb_ciclosPopupMenuWillBecomeVisible
         // TODO add your handling code here:
         llenarCiclos();

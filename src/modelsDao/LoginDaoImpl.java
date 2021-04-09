@@ -1,7 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Esta clase implementa la interface específica de su clase modelo, con lo que
+ * implementaremos todos los métodos tanto generales como específicos a usar 
+ * con este modelo.
+ * Además recive como parámetro una instancia de la conexión a la base de datos
  */
 package modelsDao;
 
@@ -29,6 +30,7 @@ public class LoginDaoImpl implements LoginDao {
     private static final String LOGIN_BY_EMAIL = "SELECT * FROM login WHERE email=";
     private static final String ID_BY_EMAIL = "SELECT id FROM login WHERE email=";
     private static final String UPDATE_LOGIN = "UPDATE login SET email=?, password=?,activo=?,rol=? WHERE id=?";
+    private static final String DELETE_LOGIN = "DELETE FROM login WHERE email=?";
 
     public LoginDaoImpl(Connection conn) {
         this.conn = conn;
@@ -38,9 +40,6 @@ public class LoginDaoImpl implements LoginDao {
     public boolean insert(Login a) {
         boolean insertado = false;
         PreparedStatement ps = null;
-
-        Login login = getLoginByEmail(a.getEmail());
-        if (login == null) {
 
             Long idLogin = maxId();
 
@@ -55,6 +54,7 @@ public class LoginDaoImpl implements LoginDao {
                 if (ps.executeUpdate() > 0) {
                     insertado = true;
                 }
+                
 
             } catch (SQLException ex) {
                 Logger.getLogger(LoginDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -67,7 +67,6 @@ public class LoginDaoImpl implements LoginDao {
                     Logger.getLogger(LoginDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
         return insertado;
     }
 
@@ -105,7 +104,25 @@ public class LoginDaoImpl implements LoginDao {
 
     @Override
     public void delete(Login a) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PreparedStatement ps = null;
+        
+        try{
+            ps = conn.prepareStatement(DELETE_LOGIN);
+            ps.setString(1, a.getEmail());
+            
+            ps.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(LoginDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     @Override

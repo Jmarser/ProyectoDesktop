@@ -1,7 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Interface que implementa la interface genérida DAO, pero ya indicandole que
+ * objeto específico va a recibir.
+ * Es en esta interface donde deberemos declarar los métodos específicos que necesitemos
+ * para las consultas de este modelo.
  */
 package modelsDao;
 

@@ -1,11 +1,11 @@
 package utils;
 
 /**
- * Clase que contiene las constantes, expresiones regulares y datos de acceso a
- * la base de datos
+ * Clase que contiene constantes, expresiones regulares, rutas de acceso a recursos
+ * datos de acceso a la base de datos, patrones de validación
  *
  * @author Jmarser
- * @version 1.0, 07/01/2021
+ * @version 1.0, 07/03/2021
  */
 public class Constantes {
 
@@ -21,9 +21,14 @@ public class Constantes {
     public static final String PASS_MYSQL = "1234";
 
     /* ----- Patrones de verificación ----- */
-    /* ----- expresion regular para validar correos ----- */
+    // ----- expresion regular para validar correos
     public static final String PATTERN_CORREO = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
+    //Patrón para claves de BAJO nivel
+    public static final String PATRON_LOW = "^(?=\\w*[A-Z])(?=\\w*[a-z])\\S{6,}$";
+    //Patrón para claves de nivel MEDIO
+    public static final String PATRON_MEDIUM = "^(?=\\w*\\d)(?=\\w*[A-Z])(?=\\w*[a-z])\\S{8,}$";
+    //Patrón para claves de nivel ALTO
+    public static final String PATRON_HIGH = "^(?=.*\\d{2,})(?=.*[\\u0021-\\u002b\\u003c-\\u0040])(?=.*[A-Z]{2,})(?=.*[a-z]{2,})\\S{10,}$";
 
     /* ----- constantes para la generación de las claves ----- */
     //conjunto de caracteres para la generación de las claves.
@@ -37,13 +42,6 @@ public class Constantes {
     public static final int LONG_MEDIUM = 8;
     public static final int LONG_HIGH = 10;
     public static final int LONG_PIN_CARD = 4;
-
-    //Patrón para claves de BAJO nivel
-    public static final String PATRON_LOW = "^(?=\\w*[A-Z])(?=\\w*[a-z])\\S{6,}$";
-    //Patrón para claves de nivel MEDIO
-    public static final String PATRON_MEDIUM = "^(?=\\w*\\d)(?=\\w*[A-Z])(?=\\w*[a-z])\\S{8,}$";
-    //Patrón para claves de nivel ALTO
-    public static final String PATRON_HIGH = "^(?=.*\\d{2,})(?=.*[\\u0021-\\u002b\\u003c-\\u0040])(?=.*[A-Z]{2,})(?=.*[a-z]{2,})\\S{10,}$";
 
     //array para rellenar los niveles de seguridad.
     public static final String[] NIVELES = {"Seleccione nivel", "Bajo", "Medio", "Alto"};

@@ -5,9 +5,14 @@
  */
 package views.internalFrame;
 
+import conexion.ConMySQL;
 import java.awt.event.ItemEvent;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import models.Empresa;
 import models.Login;
@@ -27,7 +32,9 @@ public class GestionTutores extends javax.swing.JInternalFrame {
     private static final long serialVersionUID = 1L;
     public static String x;
 
-    private ManagerDaoImpl gestor = new ManagerDaoImpl();
+    private final Connection conn = ConMySQL.getConexion();
+
+    private final ManagerDaoImpl gestor = new ManagerDaoImpl();
     private List<Tutor> tutores = new ArrayList<>();
     private List<Empresa> empresas = new ArrayList<>();
 
@@ -38,6 +45,7 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         initBotones();
     }
 
+    /*Iniciamos algunos atributos de la ventana y componentes*/
     private void initVentana() {
         this.setTitle("GESTIÓN DE TUTORES");
         this.ocultar_pass.setVisible(false);
@@ -46,12 +54,15 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         llenarEmpresas();
         autoCompletarJCB();
     }
-    
-    private void autoCompletarJCB(){
+
+    /*Implementamos la función de autocompletar de los JComboBox*/
+    private void autoCompletarJCB() {
         AutoCompleteDecorator.decorate(jcb_tutores);
         AutoCompleteDecorator.decorate(jcb_empresas);
     }
 
+    /*Habilitamos o deshabilitamos algunos compenentes dependiendo de la acción
+    que queramos realizar, guardar o modificar un registro*/
     private void initBotones() {
         if (this.jcb_tutores.getSelectedIndex() != 0) {
             this.btn_modificar.setEnabled(true);
@@ -67,13 +78,18 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         }
     }
 
+    /*Llenamos los niveles de seguridad para la generación de password aleatorios.
+    como éstos valores no van a variar usamos un String[] ya establecido*/
     private void llenarNiveles() {
         for (String nivel : Constantes.NIVELES) {
             this.jcb_nivelSeguridad.addItem(nivel);
         }
     }
 
+    /*Obtenemos los tutores de la base de datos y los cargamos en un JComboBox*/
     private void llenarTutores() {
+        /*Para evitar que se dupliquen los registros eliminamos los que ya existan
+        en el JComboBox*/
         this.jcb_tutores.removeAllItems();
 
         tutores = gestor.getTutorDao().getAll();
@@ -86,7 +102,10 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         }
     }
 
+    /*Obtenemos todas las empresas que hay en la BBDD y las cargamos en el JComboBox*/
     private void llenarEmpresas() {
+        /*Para evitar el duplicado de los items borramos los que contenga
+        el JComboBox*/
         this.jcb_empresas.removeAllItems();
 
         this.jcb_empresas.addItem("Seleccione una empresa");
@@ -112,6 +131,8 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         this.checkBox_activo.setSelected(false);
     }
 
+    /*Establecemos la longitud minima del password dependiendo del nivel de
+    seguridad que seleccione el usuario*/
     private void longitudMinima() {
         if (this.jcb_nivelSeguridad.getSelectedIndex() != 0) {
             String nivel = this.jcb_nivelSeguridad.getSelectedItem().toString();
@@ -163,73 +184,129 @@ public class GestionTutores extends javax.swing.JInternalFrame {
                             if (Utilidades.validarCorreo(this.jtf_email.getText())) {
                                 if (this.jpf_password.getPassword().length != 0) {
                                     valido = true;
-                                }else{
+                                } else {
                                     this.jpf_password.requestFocus();
                                 }
-                            }else{
+                            } else {
                                 this.jtf_email.requestFocus();
                             }
-                        }else{
+                        } else {
                             this.jcb_empresas.requestFocus();
                         }
-                    }else{
+                    } else {
                         this.jtf_email.requestFocus();
                     }
-                }else{
+                } else {
                     this.jtf_segundoApellido.requestFocus();
                 }
-            }else{
+            } else {
                 this.jtf_primerApellido.requestFocus();
             }
-        }else{
+        } else {
             this.jtf_nombre.requestFocus();
         }
-        
+
         return valido;
     }
 
+    /*Solicitamos guardar los datos del tutor en dos tablas de la base de datos
+    en la tabla login y en la tabla tutores.
+    Como se debe realizar al insert en las dos tablas vamos a gestionar las
+    transacciones manualmente.*/
     private void guardarTutor() {
 
-        if (gestor.getLoginDao().insert(obtenerLogin())) {
-            if (gestor.getTutorDao().insert(obtenerTutor())) {
-                JOptionPane.showMessageDialog(null, "Tutor guardado correctamente.");
+        try {
+
+            /*Desactivamos el autocommit para poder gestionar las transacciones
+            de manera manual*/
+            conn.setAutoCommit(false);
+
+            if (gestor.getLoginDao().insert(obtenerLogin())) {
+                if (gestor.getTutorDao().insert(obtenerTutor())) {
+                    JOptionPane.showMessageDialog(null, "Tutor guardado correctamente.");
+                } else {
+                    /*Se ha realizado correctamente la insercion en la tabla 
+                    login, pero no en la tabla tutores, por lo que hacemos un 
+                    rollback para devolver la BBDD al estado anterior*/
+                    conn.rollback();
+                    JOptionPane.showMessageDialog(null, "Ha ocurrido un error al guardar el tutor.");
+                }
             } else {
-                //codigo
+                JOptionPane.showMessageDialog(null, "El tutor ya se encuentra registrado");
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "El tutor ya se encuentra registrado");
+
+            //las dos inserciones se han realizado correctamente
+            conn.commit();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(GestionTutores.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            /*Nos aseguramos de activar el autocommit*/
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(GestionTutores.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
+    /*Solicitamos realizar un update del tutor. Como la actualización se debe
+    realizar en las dos tabla login y tutores, por lo tanto vamos a usar
+    manualmente las transacciones en la BBDD*/
     private void editarTutor() {
-        int indice = this.jcb_tutores.getSelectedIndex()-1;
-        
+        int indice = this.jcb_tutores.getSelectedIndex() - 1;
+
         Login login = obtenerLogin();
         login.setId(gestor.getLoginDao().getIdByEmail(tutores.get(indice).getEmail()));
-        
+
         Tutor tutor = obtenerTutor();
         tutor.setId(tutores.get(indice).getId());
-        
-        if (gestor.getLoginDao().update(login)) {
-            if (gestor.getTutorDao().update(tutor)) {
-                JOptionPane.showMessageDialog(null, "Tutor modificado correctamente.");
+
+        try {
+
+            /*Desactivamos el autocommit de la BBDD para poder gestionar las
+            transacciones en la base de datos*/
+            conn.setAutoCommit(false);
+
+            if (gestor.getLoginDao().update(login)) {
+                if (gestor.getTutorDao().update(tutor)) {
+                    JOptionPane.showMessageDialog(null, "Tutor modificado correctamente.");
+                } else {
+                    /*Se ha realizado correctamente la primera actualización en la
+                    tabla de login, pero ha habido un error en la actualización
+                    de la tabla tutores, realizamos un rollback para devolver
+                    la BBDD al estado anterior.*/
+                    conn.rollback();
+                    JOptionPane.showMessageDialog(null, "Ha ocurrido un error al actualizar el tutor.");
+                }
             } else {
-                //codigo
+                JOptionPane.showMessageDialog(null, "El tutor no ha podido ser modificado");
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "El tutor no ha podido ser modificado");
+
+            //Las dos actualizaciones se han realizado correctamente
+            conn.commit();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(GestionTutores.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            /*Nos aseguramos de activar el autocommit*/
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(GestionTutores.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
     private Tutor obtenerTutor() {
         Tutor tutor = new Tutor();
-               
+
         tutor.setNombre(this.jtf_nombre.getText());
         tutor.setPrimerApellido(this.jtf_primerApellido.getText());
         tutor.setSegundoApellido(this.jtf_segundoApellido.getText());
         tutor.setEmail(this.jtf_email.getText().trim());
         tutor.setEmpresa(this.jcb_empresas.getSelectedItem().toString());
-        
+
         return tutor;
     }
 
@@ -640,7 +717,7 @@ public class GestionTutores extends javax.swing.JInternalFrame {
             guardarTutor();
             limpiarCampos();
             llenarTutores();
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Faltan campos por rellenar.");
         }
     }//GEN-LAST:event_btn_guardarActionPerformed
@@ -665,9 +742,13 @@ public class GestionTutores extends javax.swing.JInternalFrame {
             editarTutor();
             limpiarCampos();
             llenarTutores();
+        }else{
+            JOptionPane.showMessageDialog(null, "Faltan campos por rellenar");
         }
     }//GEN-LAST:event_btn_modificarActionPerformed
 
+    /*Con este método nos aseguramos de que al desplegar el JComboBox de las 
+    empresas se actualice*/
     private void jcb_empresasPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jcb_empresasPopupMenuWillBecomeVisible
         // TODO add your handling code here:
         llenarEmpresas();

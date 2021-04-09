@@ -53,6 +53,9 @@ public class Escritorio extends javax.swing.JFrame {
         this.setIconImage(icono.getImage());
     }
     
+    /*Dependiendo de que tengamos conexión a la base de datos o no al iniciar
+    la aplicación lo botones de acceso a la gestión de la base de datos estarán
+    inhabilitados o no*/
     private void initBotones(){
         if(conn == null){
             this.jm_profesores.setEnabled(false);
@@ -65,6 +68,7 @@ public class Escritorio extends javax.swing.JFrame {
         }
     }
 
+    /*Modificamos el comportamiento de la acción de cerrar el programa*/
     private void cerrarVentana() {
         try {
             this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -80,6 +84,8 @@ public class Escritorio extends javax.swing.JFrame {
         }
     }
 
+    /*Hacemos que el programa antes de salir pida confirmación y en el caso de 
+    ser afirmativa nos aseguramos de cerrar la conexión con la base de datos*/
     private void salir() {
         int opcion = JOptionPane.showConfirmDialog(this, "¿Seguro que desea salir de la palicación?", "¿Salir?", JOptionPane.YES_NO_OPTION);
         if (opcion == JOptionPane.YES_OPTION) {
@@ -116,6 +122,7 @@ public class Escritorio extends javax.swing.JFrame {
         jmi_empresas = new javax.swing.JMenuItem();
         jm_ayuda = new javax.swing.JMenu();
         jmi_acerca = new javax.swing.JMenuItem();
+        jmi_ayuda = new javax.swing.JMenuItem();
         jmi_reconectar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -144,7 +151,7 @@ public class Escritorio extends javax.swing.JFrame {
         jm_profesores.add(jmi_gestionar_profesor);
 
         jmi_ciclos.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
-        jmi_ciclos.setText("Ciclos");
+        jmi_ciclos.setText("Gestionar Ciclos");
         jmi_ciclos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmi_ciclosActionPerformed(evt);
@@ -181,7 +188,7 @@ public class Escritorio extends javax.swing.JFrame {
         jm_empresas.add(jmi_gestionar_tutor);
 
         jmi_empresas.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
-        jmi_empresas.setText("Empresas");
+        jmi_empresas.setText("Gestionar Empresas");
         jmi_empresas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmi_empresasActionPerformed(evt);
@@ -206,6 +213,9 @@ public class Escritorio extends javax.swing.JFrame {
             }
         });
         jm_ayuda.add(jmi_acerca);
+
+        jmi_ayuda.setText("Ayuda");
+        jm_ayuda.add(jmi_ayuda);
 
         jmi_reconectar.setText("Reconectar");
         jmi_reconectar.addActionListener(new java.awt.event.ActionListener() {
@@ -315,7 +325,8 @@ public class Escritorio extends javax.swing.JFrame {
     }//GEN-LAST:event_jmi_acercaActionPerformed
 
     private void jmi_reconectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_reconectarActionPerformed
-        // TODO add your handling code here:
+        /* en el caso de no tener conexión a la base de datos, podemos volvera 
+        intentarlo sin tener que cerrar el programa*/
         if(conn == null){
             conn = ConMySQL.getConexion();
             initBotones();
@@ -365,6 +376,7 @@ public class Escritorio extends javax.swing.JFrame {
     private javax.swing.JMenu jm_empresas;
     private javax.swing.JMenu jm_profesores;
     private javax.swing.JMenuItem jmi_acerca;
+    private javax.swing.JMenuItem jmi_ayuda;
     private javax.swing.JMenuItem jmi_ciclos;
     private javax.swing.JMenuItem jmi_empresas;
     private javax.swing.JMenuItem jmi_gestionar_alumno;

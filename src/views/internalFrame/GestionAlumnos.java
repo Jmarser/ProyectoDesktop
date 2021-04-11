@@ -61,6 +61,16 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         llenarProfesores();
         llenarTutores();
         autoCompletarJCB();
+        soloLetras();
+        Utilidades.soloNumeros(jtf_longitud);//sólo permitimos números en este campo
+    }
+    
+    /*Controlamos que en los campos que indiquemos sólo se puedan introducir
+    letras*/
+    private void soloLetras(){
+        Utilidades.soloLetras(this.jtf_nombre);
+        Utilidades.soloLetras(this.jtf_primerApellido);
+        Utilidades.soloLetras(this.jtf_segundoApellido);
     }
 
     /*Incluimos la función de autocompletar el texto en los JComboBox para el caso

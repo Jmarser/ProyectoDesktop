@@ -53,8 +53,18 @@ public class GestionTutores extends javax.swing.JInternalFrame {
         llenarTutores();
         llenarEmpresas();
         autoCompletarJCB();
+        soloLetras();
+        Utilidades.soloNumeros(this.jtf_longitud);//sólo permitimos números en este campo
     }
 
+    /*Controlamos que en los campos que indiquemos sólo se puedan introducir
+    letras*/
+    private void soloLetras(){
+        Utilidades.soloLetras(this.jtf_nombre);
+        Utilidades.soloLetras(this.jtf_primerApellido);
+        Utilidades.soloLetras(this.jtf_segundoApellido);
+    }
+    
     /*Implementamos la función de autocompletar de los JComboBox*/
     private void autoCompletarJCB() {
         AutoCompleteDecorator.decorate(jcb_tutores);

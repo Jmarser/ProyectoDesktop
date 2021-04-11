@@ -50,6 +50,16 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         llenarNiveles();
         llenarProfesores();
         AutoCompleteDecorator.decorate(jcb_profesores);//función autocompletar del JComboBox
+        soloLetras();
+        Utilidades.soloNumeros(this.jtf_longitud);//sólo permitimos números en este campo
+    }
+    
+    /*Controlamos que en los campos que indiquemos sólo se puedan introducir
+    letras*/
+    private void soloLetras(){
+        Utilidades.soloLetras(this.jtf_nombre);
+        Utilidades.soloLetras(this.jtf_primerApellido);
+        Utilidades.soloLetras(this.jtf_segundoApellido);
     }
 
     /*Dependiendo de la acción que queramos hacer, guardar o editar habilitaremos

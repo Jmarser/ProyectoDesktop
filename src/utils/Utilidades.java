@@ -54,7 +54,7 @@ public class Utilidades {
      * que sólo acepte números, por lo que si en el JTextField es posible que se
      * inserten letras es mejor no usar éste método.
      * 
-     * @param jtf JTextField que queremos que sólo acepte letras.
+     * @param jtf JTextField que queremos que sólo acepte números.
      */
     public static void soloNumeros(JTextField jtf){
         jtf.addKeyListener(new KeyAdapter(){

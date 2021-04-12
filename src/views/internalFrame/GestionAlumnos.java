@@ -6,6 +6,7 @@
 package views.internalFrame;
 
 import conexion.ConMySQL;
+import java.awt.FocusTraversalPolicy;
 import java.awt.event.ItemEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -249,8 +250,8 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
             if (!this.jtf_primerApellido.getText().isEmpty()) {
                 if (!this.jtf_segundoApellido.getText().isEmpty()) {
                     if (!this.jtf_email.getText().isEmpty()) {
-                        if (Utilidades.validarCorreo(this.jtf_email.getText().trim())) {
-                            if (this.jpf_password.getPassword().length != 0) {
+                        if (Utilidades.validarCadena(this.jtf_email.getText().trim(), Constantes.PATTERN_CORREO)) {
+                            if (this.jpf_password.getPassword().length < Constantes.LONG_LOW) {
                                 if (this.jcb_ciclos.getSelectedIndex() != 0) {
                                     if (this.jcb_profesores.getSelectedIndex() != 0) {
                                         if (this.jcb_tutores.getSelectedIndex() != 0) {
@@ -385,7 +386,7 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
         alumno.setPrimerApellido(this.jtf_primerApellido.getText());
         alumno.setSegundoApellido(this.jtf_segundoApellido.getText());
         alumno.setEmail(this.jtf_email.getText().trim());
-        //alumno.setCiclo(this.jcb_ciclos.getSelectedItem().toString());
+        alumno.setCiclo(this.jcb_ciclos.getSelectedItem().toString());
         alumno.setProfesorID(profesores.get(this.jcb_profesores.getSelectedIndex() - 1).getId());
         alumno.setTutorID(tutores.get(this.jcb_tutores.getSelectedIndex() - 1).getId());
 
@@ -636,6 +637,8 @@ public class GestionAlumnos extends javax.swing.JInternalFrame {
                 .addComponent(btn_generar)
                 .addContainerGap(16, Short.MAX_VALUE))
         );
+
+        jpf_password.setToolTipText("Longitud mínima 6 caracteres");
 
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel9.setText("Ciclo:");

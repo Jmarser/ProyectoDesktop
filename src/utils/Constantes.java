@@ -22,7 +22,7 @@ public class Constantes {
 
     /* ----- Patrones de verificación ----- */
     // ----- expresion regular para validar correos
-    public static final String PATTERN_CORREO = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    public static final String PATTERN_CORREO ="^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";//"^[A-Za-z0-9+_.-\\]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9.-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     //Patrón para claves de BAJO nivel
     public static final String PATRON_LOW = "^(?=\\w*[A-Z])(?=\\w*[a-z])\\S{6,}$";
     //Patrón para claves de nivel MEDIO

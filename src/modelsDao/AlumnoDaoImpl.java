@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.Alumno;
+import utils.Utilidades;
 
 /**
  *
@@ -27,10 +28,10 @@ public class AlumnoDaoImpl implements AlumnoDao {
     private final Connection conn;
 
     //consultas para la tabla alumnos
-    private static final String ADD_ALUMNO = "INSERT INTO alumnos (id, email, nombre, primer_apellido, segundo_apellido ,profesor_id, tutor_id) VALUES (?,?,?,?,?,?,?)";
+    private static final String ADD_ALUMNO = "INSERT INTO alumnos (id, creado, email, nombre, primer_apellido, segundo_apellido, ciclo , profesor_id, tutor_id) VALUES (?,?,?,?,?,?,?,?,?)";
     private static final String GET_ALL_ALUMNOS = "SELECT * FROM alumnos";
     private static final String MAX_ID_ALUMNOS = "SELECT MAX(id) FROM alumnos";
-    private static final String UPDATE_ALUMNO = "UPDATE alumnos SET email=?, nombre=?, primer_apellido=?, segundo_apellido=?, profesor_id=?, tutor_id=? WHERE id=?";
+    private static final String UPDATE_ALUMNO = "UPDATE alumnos SET email=?, nombre=?, primer_apellido=?, segundo_apellido=?, ciclo=?, profesor_id=?, tutor_id=? WHERE id=?";
 
     public AlumnoDaoImpl(Connection conn) {
         this.conn = conn;
@@ -48,13 +49,14 @@ public class AlumnoDaoImpl implements AlumnoDao {
             ps = conn.prepareStatement(ADD_ALUMNO);
 
             ps.setLong(1, idAlumno + 1);
-            ps.setString(2, a.getEmail());
-            ps.setString(3, a.getNombre());
-            ps.setString(4, a.getPrimerApellido());
-            ps.setString(5, a.getSegundoApellido());
-            //ps.setString(6, a.getCiclo());
-            ps.setLong(6, a.getProfesorID());
-            ps.setLong(7, a.getTutorID());
+            ps.setDate(2, Utilidades.fechaActual());
+            ps.setString(3, a.getEmail());
+            ps.setString(4, a.getNombre());
+            ps.setString(5, a.getPrimerApellido());
+            ps.setString(6, a.getSegundoApellido());
+            ps.setString(7, a.getCiclo());
+            ps.setLong(8, a.getProfesorID());
+            ps.setLong(9, a.getTutorID());
 
             if (ps.executeUpdate() > 0) {
                 insertado = true;
@@ -85,9 +87,10 @@ public class AlumnoDaoImpl implements AlumnoDao {
             ps.setString(2, a.getNombre());
             ps.setString(3, a.getPrimerApellido());
             ps.setString(4, a.getSegundoApellido());
-            ps.setLong(5, a.getProfesorID());
-            ps.setLong(6, a.getTutorID());
-            ps.setLong(7, a.getId());
+            ps.setString(5, a.getCiclo());
+            ps.setLong(6, a.getProfesorID());
+            ps.setLong(7, a.getTutorID());
+            ps.setLong(8, a.getId());
 
             if (ps.executeUpdate() > 0) {
                 editado = true;
@@ -110,22 +113,7 @@ public class AlumnoDaoImpl implements AlumnoDao {
 
     @Override
     public void delete(Alumno a) {
-        PreparedStatement ps = null;
-
-        try {
-            ps = conn.prepareCall("");
-            ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(AlumnoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -146,8 +134,9 @@ public class AlumnoDaoImpl implements AlumnoDao {
                 al.setNombre(rs.getString(4));
                 al.setPrimerApellido(rs.getString(5));
                 al.setSegundoApellido(rs.getString(6));
-                al.setProfesorID(rs.getLong(7));
-                al.setTutorID(rs.getLong(8));
+                al.setCiclo(rs.getString(7));
+                al.setProfesorID(rs.getLong(8));
+                al.setTutorID(rs.getLong(9));
 
                 listado.add(al);
             }

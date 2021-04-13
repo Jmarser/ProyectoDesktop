@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import models.Profesor;
+import utils.Utilidades;
 
 /**
  *
@@ -27,7 +28,7 @@ public class ProfesorDaoImpl implements ProfesorDao {
     private final Connection conn;
 
     //Consultas para la tabla profesores.
-    private static final String ADD_PROFESOR = "INSERT INTO profesores (id, nombre, primer_apellido, segundo_apellido, email) VALUES (?, ?, ?, ?, ?)";
+    private static final String ADD_PROFESOR = "INSERT INTO profesores (id, creado, nombre, primer_apellido, segundo_apellido, email) VALUES (?,?, ?, ?, ?, ?)";
     private static final String GET_ALL_PROFESORES = "SELECT * FROM profesores";
     private static final String MAX_ID_PROFESORES = "SELECT MAX(id) FROM profesores";
     private static final String UPDATE_PROFESOR = "UPDATE profesores SET email=?, nombre=?, primer_apellido=?, segundo_apellido=? WHERE id=?";
@@ -47,16 +48,15 @@ public class ProfesorDaoImpl implements ProfesorDao {
         try {
             ps = conn.prepareStatement(ADD_PROFESOR);
             ps.setLong(1, idProfesor + 1);
-            ps.setString(2, a.getNombre());
-            ps.setString(3, a.getPrimerApellido());
-            ps.setString(4, a.getSegundoApellido());
-            ps.setString(5, a.getEmail());
+            ps.setDate(2, Utilidades.fechaActual());
+            ps.setString(3, a.getNombre());
+            ps.setString(4, a.getPrimerApellido());
+            ps.setString(5, a.getSegundoApellido());
+            ps.setString(6, a.getEmail());
 
             if (ps.executeUpdate() > 0) {
                 insertado = true;
             }
-
-            JOptionPane.showMessageDialog(null, "Profesor insertado correctamente.");
 
         } catch (SQLException ex) {
             Logger.getLogger(ProfesorDaoImpl.class.getName()).log(Level.SEVERE, null, ex);

@@ -192,7 +192,7 @@ public class GestionTutores extends javax.swing.JInternalFrame {
                     if (!this.jtf_email.getText().isEmpty()) {
                         if (this.jcb_empresas.getSelectedIndex() != 0) {
                             if (Utilidades.validarCadena(this.jtf_email.getText().trim(), Constantes.PATTERN_CORREO)) {
-                                if (this.jpf_password.getPassword().length < Constantes.LONG_LOW) {
+                                if (this.jpf_password.getPassword().length >= Constantes.LONG_LOW) {
                                     valido = true;
                                 } else {
                                     this.jpf_password.requestFocus();

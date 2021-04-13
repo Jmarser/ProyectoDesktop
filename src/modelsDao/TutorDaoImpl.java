@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.Tutor;
+import utils.Utilidades;
 
 /**
  *
@@ -26,7 +27,7 @@ public class TutorDaoImpl implements TutorDao {
     private final Connection conn;
 
     //consultas para la tabla tutores
-    private static final String ADD_TUTOR = "INSERT INTO tutores (id, nombre, primer_apellido, segundo_apellido, email, empresa) VALUES (?,?,?,?,?,?)";
+    private static final String ADD_TUTOR = "INSERT INTO tutores (id, creado, nombre, primer_apellido, segundo_apellido, email, empresa) VALUES (?,?,?,?,?,?,?)";
     private static final String GET_ALL_TUTORES = "SELECT * FROM tutores";
     private static final String MAX_ID_TUTORES = "SELECT MAX(id) FROM tutores";
     private static final String UPDATE_TUTOR = "UPDATE tutores SET email=?, nombre=?, primer_apellido=?, segundo_apellido=?, empresa=? WHERE id=?";
@@ -46,11 +47,12 @@ public class TutorDaoImpl implements TutorDao {
         try {
             ps = conn.prepareStatement(ADD_TUTOR);
             ps.setLong(1, idTutor + 1);
-            ps.setString(2, a.getNombre());
-            ps.setString(3, a.getPrimerApellido());
-            ps.setString(4, a.getSegundoApellido());
-            ps.setString(5, a.getEmail());
-            ps.setString(6, a.getEmpresa());
+            ps.setDate(2, Utilidades.fechaActual());
+            ps.setString(3, a.getNombre());
+            ps.setString(4, a.getPrimerApellido());
+            ps.setString(5, a.getSegundoApellido());
+            ps.setString(6, a.getEmail());
+            ps.setString(7, a.getEmpresa());
 
             if (ps.executeUpdate() > 0) {
                 insertado = true;

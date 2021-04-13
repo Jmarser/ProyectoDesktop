@@ -5,6 +5,8 @@
  */
 package models;
 
+import java.sql.Date;
+
 /**
  *
  * @author Jmarser
@@ -20,12 +22,14 @@ public class Alumno extends Persona{
     public Alumno() {
     }
 
-    public Alumno(String ciclo, Long profesorID, Long tutorID, Long id, String nombre, String primerApellido, String segundoApellido, String email, String password, boolean activo) {
-        super(id, nombre, primerApellido, segundoApellido, email, password, activo);
+    public Alumno(String ciclo, Long profesorID, Long tutorID, Long id, Date creado, String nombre, String primerApellido, String segundoApellido, String email, String password, boolean activo) {
+        super(id, creado, nombre, primerApellido, segundoApellido, email, password, activo);
         this.ciclo = ciclo;
         this.profesorID = profesorID;
         this.tutorID = tutorID;
     }
+
+
  
     public String getCiclo() {
         return ciclo;

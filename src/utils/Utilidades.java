@@ -75,4 +75,11 @@ public class Utilidades {
             }
         });
     }
+    
+    public static java.sql.Date fechaActual(){
+        java.util.Date fecha = new java.util.Date();
+        java.sql.Date fecha2 = new java.sql.Date(fecha.getTime());
+        
+        return fecha2;
+    }
 }

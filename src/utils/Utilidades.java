@@ -17,10 +17,18 @@ import javax.swing.JTextField;
  */
 public class Utilidades {
 
-    /*Método con el que validamos si el email introducido por el usuario es válido
-    según una expresión regular*/
-    public static boolean validarCorreo(String email) {
-        Pattern pattern = Pattern.compile(Constantes.PATTERN_CORREO);
+    /**
+     * Método con el que validamos si el email introducido por el usuario es 
+     * válido según una expresión regular.
+     * 
+     * @param email, string con el email que queremos validar.
+     * @param patron, patrón con el que queremos validar la cadena.
+     * 
+     * @return boolean, true en el caso de que cumpla el patrón, false en caso 
+     * contrario.
+     */
+    public static boolean validarCadena(String email, String patron) {
+        Pattern pattern = Pattern.compile(patron);
         Matcher matcher = pattern.matcher(email);
 
         if (matcher.find()) {
@@ -66,5 +74,12 @@ public class Utilidades {
                 }
             }
         });
+    }
+    
+    public static java.sql.Date fechaActual(){
+        java.util.Date fecha = new java.util.Date();
+        java.sql.Date fecha2 = new java.sql.Date(fecha.getTime());
+        
+        return fecha2;
     }
 }

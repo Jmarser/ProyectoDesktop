@@ -6,6 +6,7 @@
 package models;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 /**
  *
@@ -16,6 +17,7 @@ public abstract class Persona implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    private Date creado;
     private String nombre;
     private String primerApellido;
     private String segundoApellido;
@@ -26,8 +28,9 @@ public abstract class Persona implements Serializable {
     public Persona() {
     }
 
-    public Persona(Long id, String nombre, String primerApellido, String segundoApellido, String email, String password, boolean activo) {
+    public Persona(Long id, Date creado, String nombre, String primerApellido, String segundoApellido, String email, String password, boolean activo) {
         this.id = id;
+        this.creado = creado;
         this.nombre = nombre;
         this.primerApellido = primerApellido;
         this.segundoApellido = segundoApellido;
@@ -90,6 +93,14 @@ public abstract class Persona implements Serializable {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public Date getCreado() {
+        return creado;
+    }
+
+    public void setCreado(Date creado) {
+        this.creado = creado;
     }
 
     @Override

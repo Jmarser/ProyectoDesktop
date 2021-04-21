@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.Login;
+import utils.EncriptadorAES;
 
 /**
  *
@@ -23,6 +24,7 @@ import models.Login;
 public class LoginDaoImpl implements LoginDao {
 
     private final Connection conn;
+    private EncriptadorAES encriptador;
 
     //consultas para la tabla de login
     private static final String INSERT_LOGIN = "INSERT INTO login (id, activo, email, password, rol) VALUES (?,?,?,?,?)";
@@ -31,9 +33,12 @@ public class LoginDaoImpl implements LoginDao {
     private static final String ID_BY_EMAIL = "SELECT id FROM login WHERE email=";
     private static final String UPDATE_LOGIN = "UPDATE login SET email=?, password=?,activo=?,rol=? WHERE id=?";
     private static final String DELETE_LOGIN = "DELETE FROM login WHERE email=?";
+    
+    private static final String CLAVE_ENCRIPTACION = "gestiondelaspracticas";
 
     public LoginDaoImpl(Connection conn) {
         this.conn = conn;
+        encriptador = new EncriptadorAES();
     }
 
     @Override
@@ -48,7 +53,7 @@ public class LoginDaoImpl implements LoginDao {
                 ps.setLong(1, idLogin + 1);
                 ps.setBoolean(2, a.isActivo());
                 ps.setString(3, a.getEmail());
-                ps.setString(4, a.getPassword());
+                ps.setString(4, encriptador.encriptar(a.getPassword(), CLAVE_ENCRIPTACION));
                 ps.setString(5, a.getRol());
 
                 if (ps.executeUpdate() > 0) {
@@ -78,7 +83,7 @@ public class LoginDaoImpl implements LoginDao {
         try {
             ps = conn.prepareStatement(UPDATE_LOGIN);
             ps.setString(1, a.getEmail());
-            ps.setString(2, a.getPassword());
+            ps.setString(2, encriptador.encriptar(a.getPassword(), CLAVE_ENCRIPTACION));
             ps.setBoolean(3, a.isActivo());
             ps.setString(4, a.getRol());
             ps.setLong(5, a.getId());
@@ -182,7 +187,7 @@ public class LoginDaoImpl implements LoginDao {
                 login.setId(rs.getLong(1));
                 login.setActivo(rs.getBoolean(2));
                 login.setEmail(rs.getString(3));
-                login.setPassword(rs.getString(4));
+                login.setPassword(encriptador.desencriptar(rs.getString(4), CLAVE_ENCRIPTACION));
                 login.setRol(rs.getString(5));
 
             }

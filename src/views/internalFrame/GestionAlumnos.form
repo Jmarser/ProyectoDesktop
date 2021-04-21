@@ -434,6 +434,9 @@
               </SubComponents>
             </Container>
             <Component class="javax.swing.JPasswordField" name="jpf_password">
+              <Properties>
+                <Property name="toolTipText" type="java.lang.String" value="Longitud m&#xed;nima 6 caracteres"/>
+              </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel9">
               <Properties>

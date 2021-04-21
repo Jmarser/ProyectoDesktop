@@ -5,6 +5,7 @@
  */
 package models;
 
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -21,8 +22,8 @@ public class Tutor extends Persona{
     public Tutor() {
     }
 
-    public Tutor(String empresa, List<Alumno> listaAlumnos, Long id, String nombre, String primerApellido, String segundoApellido, String email, String password, boolean activo) {
-        super(id, nombre, primerApellido, segundoApellido, email, password, activo);
+    public Tutor(String empresa, List<Alumno> listaAlumnos, Long id, Date creado, String nombre, String primerApellido, String segundoApellido, String email, String password, boolean activo) {
+        super(id, creado, nombre, primerApellido, segundoApellido, email, password, activo);
         this.empresa = empresa;
         this.listaAlumnos = listaAlumnos;
     }

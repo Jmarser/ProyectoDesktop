@@ -53,10 +53,10 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
         soloLetras();
         Utilidades.soloNumeros(this.jtf_longitud);//sólo permitimos números en este campo
     }
-    
+
     /*Controlamos que en los campos que indiquemos sólo se puedan introducir
     letras*/
-    private void soloLetras(){
+    private void soloLetras() {
         Utilidades.soloLetras(this.jtf_nombre);
         Utilidades.soloLetras(this.jtf_primerApellido);
         Utilidades.soloLetras(this.jtf_segundoApellido);
@@ -158,8 +158,8 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
             if (!this.jtf_primerApellido.getText().isEmpty()) {
                 if (!this.jtf_segundoApellido.getText().isEmpty()) {
                     if (!this.jtf_email.getText().isEmpty()) {
-                        if (Utilidades.validarCorreo(this.jtf_email.getText())) {
-                            if (this.jpf_password.getPassword().length != 0) {
+                        if (Utilidades.validarCadena(this.jtf_email.getText().trim(), Constantes.PATTERN_CORREO)) {
+                            if (this.jpf_password.getPassword().length >= Constantes.LONG_LOW) {
                                 valido = true;
                             } else {
                                 this.jpf_password.requestFocus();
@@ -210,7 +210,7 @@ public class GestionProfesores extends javax.swing.JInternalFrame {
 
             //Los dos insert se han realizado correctamente
             conn.commit();
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(GestionProfesores.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

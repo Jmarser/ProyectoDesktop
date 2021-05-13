@@ -6,7 +6,6 @@
 package views.internalFrame;
 
 import conexion.ConMySQL;
-import java.awt.FocusTraversalPolicy;
 import java.awt.event.ItemEvent;
 import java.sql.Connection;
 import java.sql.SQLException;

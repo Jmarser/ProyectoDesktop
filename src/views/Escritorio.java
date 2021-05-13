@@ -6,10 +6,18 @@
 package views;
 
 import conexion.ConMySQL;
+import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
+import javax.help.HelpSetException;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -31,6 +39,11 @@ public class Escritorio extends javax.swing.JFrame {
     cerrar el programa que cerramos la conexión con la base de datos.*/
     private Connection conn = ConMySQL.getConexion();
 
+    //variables para la ayuda
+    private HelpSet helpSet;
+    private HelpBroker hb;
+            
+    
     public Escritorio() {
         initComponents();
         initVentana();
@@ -43,7 +56,7 @@ public class Escritorio extends javax.swing.JFrame {
         initBotones();
         addIcono();
         cerrarVentana();
-        
+        cargarAyuda();
     }
 
     /*Establecemos el icono de la aplicación*/
@@ -52,16 +65,16 @@ public class Escritorio extends javax.swing.JFrame {
         ImageIcon icono = new ImageIcon(url);
         this.setIconImage(icono.getImage());
     }
-    
+
     /*Dependiendo de que tengamos conexión a la base de datos o no al iniciar
     la aplicación lo botones de acceso a la gestión de la base de datos estarán
     inhabilitados o no*/
-    private void initBotones(){
-        if(conn == null){
+    private void initBotones() {
+        if (conn == null) {
             this.jm_profesores.setEnabled(false);
             this.jm_alumnos.setEnabled(false);
             this.jm_empresas.setEnabled(false);
-        }else{
+        } else {
             this.jm_profesores.setEnabled(true);
             this.jm_alumnos.setEnabled(true);
             this.jm_empresas.setEnabled(true);
@@ -101,6 +114,31 @@ public class Escritorio extends javax.swing.JFrame {
         }
     }
 
+    /* Método con el que cargamos la opción ayuda JavaHelp para esta aplicacion.
+     éste método no se llama desde un botón u otro método, sino que se carga 
+     directamente en el inicio de la ventana*/
+    private void cargarAyuda(){
+        try{
+            //ponemos el foco sobre la ventana
+            this.getContentPane().requestFocus();
+            //cargamos el fichero help con una ruta relativa
+            File fichero = new File("./help/help_set.hs");
+            URL hsURL = fichero.toURI().toURL();
+            //iniciamos el helpset
+            helpSet = new HelpSet(getClass().getClassLoader(), hsURL);
+            //iniciamos helpBroker
+            hb = helpSet.createHelpBroker();
+            //establecemos un tamaño para la pantalla de ayuda
+            hb.setSize(new Dimension(1000, 900));
+            //establecemos que al pulsar la tecla F1 se abra la ventana de ayuda
+            hb.enableHelpKey(this.getContentPane(), "escritorio", helpSet);
+            //asociamos que aparezca la ayuda al pulsar el boton de la barra de menu
+            hb.enableHelpOnButton(this.jmi_ayuda, "escritorio", helpSet);
+        } catch (MalformedURLException | HelpSetException ex) {
+            Logger.getLogger(Escritorio.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Error al cargar la ayuda");
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -120,10 +158,11 @@ public class Escritorio extends javax.swing.JFrame {
         jm_empresas = new javax.swing.JMenu();
         jmi_gestionar_tutor = new javax.swing.JMenuItem();
         jmi_empresas = new javax.swing.JMenuItem();
+        jm_herramientas = new javax.swing.JMenu();
+        jmi_reconectar = new javax.swing.JMenuItem();
         jm_ayuda = new javax.swing.JMenu();
         jmi_acerca = new javax.swing.JMenuItem();
         jmi_ayuda = new javax.swing.JMenuItem();
-        jmi_reconectar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -135,7 +174,7 @@ public class Escritorio extends javax.swing.JFrame {
         );
         jdp_escritorioLayout.setVerticalGroup(
             jdp_escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 451, Short.MAX_VALUE)
+            .addGap(0, 453, Short.MAX_VALUE)
         );
 
         jm_profesores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/teacher.png"))); // NOI18N
@@ -198,6 +237,20 @@ public class Escritorio extends javax.swing.JFrame {
 
         jMenuBar1.add(jm_empresas);
 
+        jm_herramientas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/tools.png"))); // NOI18N
+        jm_herramientas.setText("HERRAMIENTAS");
+
+        jmi_reconectar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
+        jmi_reconectar.setText("Reconectar");
+        jmi_reconectar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_reconectarActionPerformed(evt);
+            }
+        });
+        jm_herramientas.add(jmi_reconectar);
+
+        jMenuBar1.add(jm_herramientas);
+
         jm_ayuda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/help.png"))); // NOI18N
         jm_ayuda.setText("AYUDA");
         jm_ayuda.addActionListener(new java.awt.event.ActionListener() {
@@ -216,14 +269,6 @@ public class Escritorio extends javax.swing.JFrame {
 
         jmi_ayuda.setText("Ayuda");
         jm_ayuda.add(jmi_ayuda);
-
-        jmi_reconectar.setText("Reconectar");
-        jmi_reconectar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmi_reconectarActionPerformed(evt);
-            }
-        });
-        jm_ayuda.add(jmi_reconectar);
 
         jMenuBar1.add(jm_ayuda);
 
@@ -327,7 +372,7 @@ public class Escritorio extends javax.swing.JFrame {
     private void jmi_reconectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_reconectarActionPerformed
         /* en el caso de no tener conexión a la base de datos, podemos volvera 
         intentarlo sin tener que cerrar el programa*/
-        if(conn == null){
+        if (conn == null) {
             conn = ConMySQL.getConexion();
             initBotones();
         }
@@ -374,6 +419,7 @@ public class Escritorio extends javax.swing.JFrame {
     private javax.swing.JMenu jm_alumnos;
     private javax.swing.JMenu jm_ayuda;
     private javax.swing.JMenu jm_empresas;
+    private javax.swing.JMenu jm_herramientas;
     private javax.swing.JMenu jm_profesores;
     private javax.swing.JMenuItem jmi_acerca;
     private javax.swing.JMenuItem jmi_ayuda;

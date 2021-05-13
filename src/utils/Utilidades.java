@@ -76,10 +76,18 @@ public class Utilidades {
         });
     }
     
+    /**
+     * Método con el que obtenemos la fecha del sistema y la formateamos para 
+     * poder usarla en la base de datos MySQL.
+     */
     public static java.sql.Date fechaActual(){
+        /*
         java.util.Date fecha = new java.util.Date();
         java.sql.Date fecha2 = new java.sql.Date(fecha.getTime());
         
         return fecha2;
+        */
+        
+        return new java.sql.Date((new java.util.Date()).getTime());
     }
 }

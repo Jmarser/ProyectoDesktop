@@ -122,7 +122,7 @@ public class Escritorio extends javax.swing.JFrame {
             //ponemos el foco sobre la ventana
             this.getContentPane().requestFocus();
             //cargamos el fichero help con una ruta relativa
-            File fichero = new File("./help/help_set.hs");
+            File fichero = new File("help/help_set.hs");
             URL hsURL = fichero.toURI().toURL();
             //iniciamos el helpset
             helpSet = new HelpSet(getClass().getClassLoader(), hsURL);
@@ -268,6 +268,11 @@ public class Escritorio extends javax.swing.JFrame {
         jm_ayuda.add(jmi_acerca);
 
         jmi_ayuda.setText("Ayuda");
+        jmi_ayuda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_ayudaActionPerformed(evt);
+            }
+        });
         jm_ayuda.add(jmi_ayuda);
 
         jMenuBar1.add(jm_ayuda);
@@ -377,6 +382,10 @@ public class Escritorio extends javax.swing.JFrame {
             initBotones();
         }
     }//GEN-LAST:event_jmi_reconectarActionPerformed
+
+    private void jmi_ayudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_ayudaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jmi_ayudaActionPerformed
 
     /**
      * @param args the command line arguments

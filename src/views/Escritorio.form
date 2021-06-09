@@ -133,6 +133,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Ayuda"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmi_ayudaActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
